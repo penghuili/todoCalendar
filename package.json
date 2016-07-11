@@ -1,0 +1,24 @@
+{
+  "name": "todoCalendar",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "engines": {
+    "node": "~6.3.0",
+    "npm": "~3.10.3"
+  },
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "morgan": "~1.6.1",
+    "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "pug": "^2.0.0-beta3",
+    "stylus": "^0.54.5"
+  }
+}
