@@ -1,0 +1,33 @@
+.panel-group#todoList
+  .panel.panel-primary#inboxHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#inbox').
+          <span class='glyphicon glyphicon-inbox'></span>
+          &nbsp;Inbox
+    .panel-collapse.collapse#inbox
+      ul.list-group
+        li.list-group-item gulp
+        li.list-group-item jade
+        li.list-group-item stylus
+
+  .panel.panel-primary#todayHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#today').
+          <span class='glyphicon glyphicon-star'></span>
+          &nbsp;Today
+    .panel-collapse.collapse#today
+      ul.list-group
+        li.list-group-item gulp
+        li.list-group-item stylus
+
+  .panel.panel-primary#upcomingHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#upcoming').
+          <span class='glyphicon glyphicon-refresh'></span>
+          &nbsp;Upcoming
+    .panel-collapse.collapse#upcoming
+      ul.list-group
+        li.list-group-item jade
