@@ -1,6 +1,8 @@
 var gulp = require("gulp"),
     pug = require("gulp-pug"),
-    stylus = require("gulp-stylus");
+    stylus = require("gulp-stylus"),
+    concat = require("gulp-concat"),
+    uglify = require("gulp-uglify");
 
 var config = {
   stylus: {
@@ -13,6 +15,10 @@ var config = {
     options: {
       pretty: true
     }
+  },
+  js: {
+    src: "app_client/**/*.js",
+    dest: "public/javascripts"
   }
 };
 
@@ -28,9 +34,17 @@ gulp.task("pug", function() {
     .pipe(gulp.dest(config.pug.dest));
 });
 
+gulp.task("js", function() {
+  return gulp.src(config.js.src)
+    .pipe(concat("todoCalendar.min.js"))
+    .pipe(uglify())
+    .pipe(gulp.dest(config.js.dest));
+});
+
 gulp.task("watch", function() {
   gulp.watch(config.stylus.src, ["stylus"]);
   gulp.watch(config.pug.src, ["pug"]);
+  gulp.watch(config.js.src, ["js"]);
 });
 
-gulp.task("default", ["stylus", "pug", "watch"]);
+gulp.task("default", ["stylus", "pug", "js", "watch"]);

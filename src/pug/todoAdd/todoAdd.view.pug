@@ -1,0 +1,32 @@
+form(ng-submit="vm.onSubmit()")
+  .panel.panel-primary
+    .panel-heading
+      .form-group(style="padding-top:12px;")
+        input.form-control(type="text", placeholder="new task", ng-model="vm.newTask")
+    .panel-body
+      .form-group
+        ul.nav.nav-tabs
+          li(class="{{vm.begin.liStatus}}", data-toggle="tab")
+            a(href="#", ng-click="vm.clickBegin()").
+              {{vm.begin.date}}<br>
+              {{vm.begin.time}}
+          li
+            a(href="#")
+              span.glyphicon.glyphicon-chevron-right
+          li(class="{{vm.end.liStatus}}", data-toggle="tab")
+            a(href="#", ng-click="vm.clickEnd()").
+              {{vm.end.date}}<br>
+              {{vm.end.time}}
+        .tab-content
+          div(class="{{vm.begin.contentStatus}}")
+            .form-group(style="padding-top:17px;")
+              input.form-control(type="date", ng-model="vm.begin.dateRaw")
+            .form-group
+              input.form-control#beginTime(type="time", ng-model="vm.begin.timeRaw")
+          div(class="{{vm.end.contentStatus}}")
+            .form-group(style="padding-top:17px;")
+              input.form-control#endDate(type="date", ng-model="vm.end.dateRaw")
+            .form-group
+              input.form-control#endTime(type="time", ng-model="vm.end.timeRaw")
+    .panel-footer
+      button.btn.btn-primary(type="submit") Submit

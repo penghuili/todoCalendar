@@ -1,0 +1,54 @@
+.panel-group#todoList
+  .panel.panel-primary#inboxHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#inbox').
+          <span class='glyphicon glyphicon-inbox'></span>
+          &nbsp;Inbox
+    .panel-collapse.collapse#inbox
+      ul.list-group
+        li.list-group-item
+          a(href="/#/todo/add").
+            <span class="glyphicon glyphicon-pencil"></span>
+            &nbsp;Add new
+        li.list-group-item(ng-repeat="inbox in vm.inboxs") {{inbox.name}}
+
+  .panel.panel-primary#todayHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#today').
+          <span class='glyphicon glyphicon-star'></span>
+          &nbsp;Today
+    .panel-collapse.collapse#today
+      ul.list-group
+        li.list-group-item(ng-repeat="today in vm.todays") {{today.name}}
+
+  .panel.panel-primary#upcomingHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#upcoming').
+          <span class='glyphicon glyphicon-refresh'></span>
+          &nbsp;Upcoming
+    .panel-collapse.collapse#upcoming
+      ul.list-group
+        li.list-group-item(ng-repeat="upcoming in vm.upcomings") {{upcoming.name}}
+
+  .panel.panel-primary#completedHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#completed').
+          <span class='glyphicon glyphicon-thumbs-up'></span>
+          &nbsp;Completed
+    .panel-collapse.collapse#completed
+      ul.list-group
+        li.list-group-item(ng-repeat="completed in vm.completeds") {{completed.name}}
+
+  .panel.panel-primary#allHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#all').
+          <span class='glyphicon glyphicon-tasks'></span>
+          &nbsp;All
+    .panel-collapse.collapse#all
+      ul.list-group
+        li.list-group-item(ng-repeat="all in vm.alls") {{all.name}}
