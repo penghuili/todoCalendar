@@ -1,7 +1,7 @@
 (function () {
 
   angular.module("todoCalendar", ["ngRoute"]);
-  
+
   config.$inject = ["$routeProvider", "$locationProvider"];
   function config($routeProvider, $locationProvider) {
     $routeProvider
@@ -50,45 +50,44 @@
 
   todoCtrl.$inject = ["utils"];
   function todoCtrl (utils) {
-    var vm = this;
-    vm.getTasks = function(obj, dateArr, completed) {
-      var tasks = [],
-          len = dateArr.length,
-          i = 0,
-          checkCompleted = function(value) {
-            return value.completed === completed;
-          };
-      for(i = 0; i < len; i++) {
-        obj[dateArr[i]] = obj[dateArr[i]] || [];
-        tasks = tasks.concat(obj[dateArr[i]].filter(checkCompleted));
-      }
-      return tasks;
-    };
-    vm.getUpcomingArr = function(date, threshold) {
-      var tmp = new Date(date),
-          upArr = [],
-          i = 0;
-      while(i < threshold) {
-        tmp.setDate(tmp.getDate() + 1);
-        upArr.unshift(utils.parseDate(tmp));
-        i++;
-      }
-      return upArr;
-    };
-
-    var today = new Date(),
+    var vm = this,
+        today = new Date(),
+        inboxs = JSON.parse(localStorage.getItem("inbox")) || [],
         withDate = JSON.parse(localStorage.getItem("withDate")) || {},
         todayArr = [utils.parseDate(today)],
-        upcomingArr = vm.getUpcomingArr(today, 3),
+        upcomingArr = utils.getUpcomingArr(today, 3),
         allArr = Object.keys(withDate).sort().reverse();
 
-    vm.inboxs = JSON.parse(localStorage.getItem("inbox")) || [];
-    vm.todays = vm.getTasks(withDate, todayArr, false);
-    vm.upcomings = vm.getTasks(withDate, upcomingArr, false);
-    vm.completeds = vm.getTasks(withDate, allArr, true);
-    vm.alls = vm.getTasks(withDate, allArr, false);
+    vm.inboxs = utils.getTasks(inboxs, [], false);
+    vm.todays = utils.getTasks(withDate, todayArr, false);
+    vm.upcomings = utils.getTasks(withDate, upcomingArr, false);
+    vm.completeds = utils.getTasks(withDate, allArr, true)
+      .concat(utils.getTasks(inboxs, [], true))
+      .sort(function(a, b) {return b.checkedOn - a.checkedOn;});
+    vm.alls = utils.getTasks(withDate, allArr, false)
+      .concat(utils.getTasks(inboxs, [], false))
+      .sort(function(a, b) {return b.createdOn - a.createdOn;});
 
+    vm.inboxChange = function() {
+      var checked = vm.inboxs.filter(function(value) {
+        return value.completed;
+      })[0];
+      var checkedId = checked.createdOn.toString();
+      
+      var index = inboxs.indexOf(checked);
+      inboxs[index].completed = true;
+      inboxs[index].checkedOn = new Date().getTime();
+      localStorage.setItem("inbox", JSON.stringify(inboxs));
 
+      var removed = $("#" + checkedId).parent().remove();
+      var inboxBadge = $("#inboxHead .badge");
+      inboxBadge.html(Number(inboxBadge.html()) - 1);
+
+      var lii = $("#completed .list-group li:first-of-type");
+      removed.insertBefore(lii);
+      var completedBadge = $("#completedHead .badge");
+      completedBadge.html(Number(completedBadge.html()) + 1);
+    };
   }
 })();
 
@@ -149,13 +148,13 @@
       if(vm.newTask && beginDateRaw && beginTimeRaw && endDateRaw && endTimeRaw) {
         var beginDate = utils.parseDate(new Date(beginDateRaw)),
           beginTime = utils.parseDate(new Date(beginTimeRaw)),
-          endDate = new Date(endDateRaw),
-          endTime = new Date(endTimeRaw);
+          endDate = utils.parseDate(new Date(endDateRaw)),
+          endTime = utils.parseTime(new Date(endTimeRaw));
 
-        vm.begin.date = vm.addSlash(beginDate);
-        vm.begin.time = vm.addSlash(beginTime);
-        vm.end.date = utils.parseDate(endDate);
-        vm.end.time = utils.parseTime(endTime);
+        vm.begin.date = utils.addSlash(beginDate);
+        vm.begin.time = beginTime;
+        vm.end.date = utils.addSlash(endDate);
+        vm.end.time = endTime;
 
         if(!vm.withDate[beginDate]) {
           vm.withDate[beginDate] = [];
@@ -174,13 +173,6 @@
         return;
       }
     };
-
-    vm.addSlash = function(date) {
-      var year = date.substring(0,4),
-        month = date.substring(4,6),
-        day = date.substring(6);
-      return month + "/" + day + "/" + year;
-    };
   }
 })();
 
@@ -191,6 +183,27 @@
     .service("utils", utils);
 
   function utils() {
+    var addZero = function(num) {
+      if(num < 10) {
+        return "0" + num.toString();
+      }
+      return num.toString();
+    };
+
+    var amOrPm = function(hour) {
+      if(hour > 12) {
+        return [addZero(hour - 12), "PM"];
+      }
+      return [addZero(hour), "AM"];
+    };
+
+    var addSlash = function(date) {
+      var year = date.substring(0,4),
+        month = date.substring(4,6),
+        day = date.substring(6);
+      return month + "/" + day + "/" + year;
+    };
+
     var parseDate = function(date) {
       var year = date.getFullYear().toString(),
         month = addZero(date.getMonth() + 1),
@@ -203,23 +216,43 @@
         minutes = addZero(time.getMinutes());
       return hour[0] + ":" + minutes + " " + hour[1];
     };
-    var amOrPm = function(hour) {
-      if(hour > 12) {
-        return [addZero(hour - 12), "PM"];
+
+    var getUpcomingArr = function(date, threshold) {
+      var tmp = new Date(date),
+          upArr = [],
+          i = 0;
+      while(i < threshold) {
+        tmp.setDate(tmp.getDate() + 1);
+        upArr.unshift(parseDate(tmp));
+        i++;
       }
-      return [addZero(hour), "AM"];
+      return upArr;
     };
 
-    var addZero = function(num) {
-      if(num < 10) {
-        return "0" + num.toString();
+    var getTasks = function(obj, dateArr, completed) {
+      var tasks = [],
+          len = dateArr.length,
+          i = 0,
+          checkCompleted = function(value) {
+            return value.completed === completed;
+          };
+      if(obj.length + 1) {
+        tasks = obj.filter(checkCompleted);
+      } else {
+        for(i = 0; i < len; i++) {
+          obj[dateArr[i]] = obj[dateArr[i]] || [];
+          tasks = tasks.concat(obj[dateArr[i]].filter(checkCompleted));
+        }
       }
-      return num.toString();
+      return tasks;
     };
 
     return {
       parseDate: parseDate,
-      parseTime: parseTime
+      parseTime: parseTime,
+      getUpcomingArr: getUpcomingArr,
+      getTasks: getTasks,
+      addSlash: addSlash
     };
   }
 

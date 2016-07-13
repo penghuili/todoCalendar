@@ -5,44 +5,43 @@
 
   todoCtrl.$inject = ["utils"];
   function todoCtrl (utils) {
-    var vm = this;
-    vm.getTasks = function(obj, dateArr, completed) {
-      var tasks = [],
-          len = dateArr.length,
-          i = 0,
-          checkCompleted = function(value) {
-            return value.completed === completed;
-          };
-      for(i = 0; i < len; i++) {
-        obj[dateArr[i]] = obj[dateArr[i]] || [];
-        tasks = tasks.concat(obj[dateArr[i]].filter(checkCompleted));
-      }
-      return tasks;
-    };
-    vm.getUpcomingArr = function(date, threshold) {
-      var tmp = new Date(date),
-          upArr = [],
-          i = 0;
-      while(i < threshold) {
-        tmp.setDate(tmp.getDate() + 1);
-        upArr.unshift(utils.parseDate(tmp));
-        i++;
-      }
-      return upArr;
-    };
-
-    var today = new Date(),
+    var vm = this,
+        today = new Date(),
+        inboxs = JSON.parse(localStorage.getItem("inbox")) || [],
         withDate = JSON.parse(localStorage.getItem("withDate")) || {},
         todayArr = [utils.parseDate(today)],
-        upcomingArr = vm.getUpcomingArr(today, 3),
+        upcomingArr = utils.getUpcomingArr(today, 3),
         allArr = Object.keys(withDate).sort().reverse();
 
-    vm.inboxs = JSON.parse(localStorage.getItem("inbox")) || [];
-    vm.todays = vm.getTasks(withDate, todayArr, false);
-    vm.upcomings = vm.getTasks(withDate, upcomingArr, false);
-    vm.completeds = vm.getTasks(withDate, allArr, true);
-    vm.alls = vm.getTasks(withDate, allArr, false);
+    vm.inboxs = utils.getTasks(inboxs, [], false);
+    vm.todays = utils.getTasks(withDate, todayArr, false);
+    vm.upcomings = utils.getTasks(withDate, upcomingArr, false);
+    vm.completeds = utils.getTasks(withDate, allArr, true)
+      .concat(utils.getTasks(inboxs, [], true))
+      .sort(function(a, b) {return b.checkedOn - a.checkedOn;});
+    vm.alls = utils.getTasks(withDate, allArr, false)
+      .concat(utils.getTasks(inboxs, [], false))
+      .sort(function(a, b) {return b.createdOn - a.createdOn;});
 
+    vm.inboxChange = function() {
+      var checked = vm.inboxs.filter(function(value) {
+        return value.completed;
+      })[0];
+      var checkedId = checked.createdOn.toString();
+      
+      var index = inboxs.indexOf(checked);
+      inboxs[index].completed = true;
+      inboxs[index].checkedOn = new Date().getTime();
+      localStorage.setItem("inbox", JSON.stringify(inboxs));
 
+      var removed = $("#" + checkedId).parent().remove();
+      var inboxBadge = $("#inboxHead .badge");
+      inboxBadge.html(Number(inboxBadge.html()) - 1);
+
+      var lii = $("#completed .list-group li:first-of-type");
+      removed.insertBefore(lii);
+      var completedBadge = $("#completedHead .badge");
+      completedBadge.html(Number(completedBadge.html()) + 1);
+    };
   }
 })();

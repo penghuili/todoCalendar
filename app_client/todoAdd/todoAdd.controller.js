@@ -55,13 +55,13 @@
       if(vm.newTask && beginDateRaw && beginTimeRaw && endDateRaw && endTimeRaw) {
         var beginDate = utils.parseDate(new Date(beginDateRaw)),
           beginTime = utils.parseDate(new Date(beginTimeRaw)),
-          endDate = new Date(endDateRaw),
-          endTime = new Date(endTimeRaw);
+          endDate = utils.parseDate(new Date(endDateRaw)),
+          endTime = utils.parseTime(new Date(endTimeRaw));
 
-        vm.begin.date = vm.addSlash(beginDate);
-        vm.begin.time = vm.addSlash(beginTime);
-        vm.end.date = utils.parseDate(endDate);
-        vm.end.time = utils.parseTime(endTime);
+        vm.begin.date = utils.addSlash(beginDate);
+        vm.begin.time = beginTime;
+        vm.end.date = utils.addSlash(endDate);
+        vm.end.time = endTime;
 
         if(!vm.withDate[beginDate]) {
           vm.withDate[beginDate] = [];
@@ -79,13 +79,6 @@
         $location.path("/todo");
         return;
       }
-    };
-
-    vm.addSlash = function(date) {
-      var year = date.substring(0,4),
-        month = date.substring(4,6),
-        day = date.substring(6);
-      return month + "/" + day + "/" + year;
     };
   }
 })();

@@ -12,7 +12,10 @@
           a(href="/#/todo/add").
             <span class="glyphicon glyphicon-pencil"></span>
             &nbsp;Add new
-        li.list-group-item(ng-repeat="inbox in vm.inboxs") {{inbox.name}}
+        li.list-group-item(ng-repeat="inbox in vm.inboxs")
+          input(type="checkbox", ng-click="vm.inboxChange()", ng-model="inbox.completed")
+          a(href="todo/{{inbox.createdOn}}", id="{{inbox.createdOn}}").
+            {{inbox.name}}
 
   .panel.panel-primary#todayHead
     .panel-heading
@@ -45,7 +48,10 @@
           &nbsp; <span class="badge">{{vm.completeds.length}}</span>
     .panel-collapse.collapse#completed
       ul.list-group
-        li.list-group-item(ng-repeat="completed in vm.completeds") {{completed.name}}
+        li.list-group-item(ng-repeat="completed in vm.completeds")
+          input(type="checkbox", ng-click="vm.completedChange()", ng-model="completed.completed")
+          a(href="todo/{{completed.createdOn}}", id="{{completed.createdOn}}").
+            {{completed.name}}
 
   .panel.panel-primary#allHead
     .panel-heading

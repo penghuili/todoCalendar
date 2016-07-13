@@ -1,7 +1,7 @@
 (function () {
 
   angular.module("todoCalendar", ["ngRoute"]);
-  
+
   config.$inject = ["$routeProvider", "$locationProvider"];
   function config($routeProvider, $locationProvider) {
     $routeProvider
