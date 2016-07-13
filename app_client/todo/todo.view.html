@@ -4,7 +4,8 @@
     <div class="panel-heading">
       <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#inbox">
           <span class='glyphicon glyphicon-inbox'></span>
-          &nbsp;Inbox</a></h3>
+          &nbsp;Inbox
+          &nbsp; <span class="badge">{{vm.inboxs.length}}</span></a></h3>
     </div>
     <div class="panel-collapse collapse" id="inbox">
       <ul class="list-group">
@@ -19,7 +20,8 @@
     <div class="panel-heading">
       <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#today">
           <span class='glyphicon glyphicon-star'></span>
-          &nbsp;Today</a></h3>
+          &nbsp;Today
+          &nbsp; <span class="badge">{{vm.todays.length}}</span></a></h3>
     </div>
     <div class="panel-collapse collapse" id="today">
       <ul class="list-group">
@@ -31,7 +33,8 @@
     <div class="panel-heading">
       <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#upcoming">
           <span class='glyphicon glyphicon-refresh'></span>
-          &nbsp;Upcoming</a></h3>
+          &nbsp;Upcoming
+          &nbsp; <span class="badge">{{vm.upcomings.length}}</span></a></h3>
     </div>
     <div class="panel-collapse collapse" id="upcoming">
       <ul class="list-group">
@@ -43,7 +46,8 @@
     <div class="panel-heading">
       <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#completed">
           <span class='glyphicon glyphicon-thumbs-up'></span>
-          &nbsp;Completed</a></h3>
+          &nbsp;Completed
+          &nbsp; <span class="badge">{{vm.completeds.length}}</span></a></h3>
     </div>
     <div class="panel-collapse collapse" id="completed">
       <ul class="list-group">
@@ -55,7 +59,8 @@
     <div class="panel-heading">
       <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#all">
           <span class='glyphicon glyphicon-tasks'></span>
-          &nbsp;All</a></h3>
+          &nbsp;All
+          &nbsp; <span class="badge">{{vm.alls.length}}</span></a></h3>
     </div>
     <div class="panel-collapse collapse" id="all">
       <ul class="list-group">

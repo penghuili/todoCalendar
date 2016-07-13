@@ -5,6 +5,7 @@
         a(data-toggle='collapse', data-parent='#todoList', href='#inbox').
           <span class='glyphicon glyphicon-inbox'></span>
           &nbsp;Inbox
+          &nbsp; <span class="badge">{{vm.inboxs.length}}</span>
     .panel-collapse.collapse#inbox
       ul.list-group
         li.list-group-item
@@ -19,6 +20,7 @@
         a(data-toggle='collapse', data-parent='#todoList', href='#today').
           <span class='glyphicon glyphicon-star'></span>
           &nbsp;Today
+          &nbsp; <span class="badge">{{vm.todays.length}}</span>
     .panel-collapse.collapse#today
       ul.list-group
         li.list-group-item(ng-repeat="today in vm.todays") {{today.name}}
@@ -29,6 +31,7 @@
         a(data-toggle='collapse', data-parent='#todoList', href='#upcoming').
           <span class='glyphicon glyphicon-refresh'></span>
           &nbsp;Upcoming
+          &nbsp; <span class="badge">{{vm.upcomings.length}}</span>
     .panel-collapse.collapse#upcoming
       ul.list-group
         li.list-group-item(ng-repeat="upcoming in vm.upcomings") {{upcoming.name}}
@@ -39,6 +42,7 @@
         a(data-toggle='collapse', data-parent='#todoList', href='#completed').
           <span class='glyphicon glyphicon-thumbs-up'></span>
           &nbsp;Completed
+          &nbsp; <span class="badge">{{vm.completeds.length}}</span>
     .panel-collapse.collapse#completed
       ul.list-group
         li.list-group-item(ng-repeat="completed in vm.completeds") {{completed.name}}
@@ -49,6 +53,7 @@
         a(data-toggle='collapse', data-parent='#todoList', href='#all').
           <span class='glyphicon glyphicon-tasks'></span>
           &nbsp;All
+          &nbsp; <span class="badge">{{vm.alls.length}}</span>
     .panel-collapse.collapse#all
       ul.list-group
         li.list-group-item(ng-repeat="all in vm.alls") {{all.name}}

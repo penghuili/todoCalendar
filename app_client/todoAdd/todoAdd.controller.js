@@ -3,7 +3,8 @@
     .module("todoCalendar")
     .controller("todoAddCtrl", todoAddCtrl);
 
-  function todoAddCtrl() {
+  todoAddCtrl.$inject = ["$location", "utils"];
+  function todoAddCtrl($location, utils) {
     var vm = this;
     vm.newTask = "";
     vm.begin = {
@@ -35,20 +36,56 @@
       vm.end.contentStatus = "tab-pane";
     };
     vm.onSubmit = function() {
-      var beginDateRaw = vm.begin.dateRaw;
-      console.log(beginDateRaw);
-      if(beginDateRaw) {
-        var beginDate = new Date(beginDateRaw);
+      vm.inbox = JSON.parse(localStorage.getItem("inbox")) || [];
+      vm.withDate = JSON.parse(localStorage.getItem("withDate")) || {};
+      var now = new Date().getTime();
 
-        var beginYear = beginDate.getFullYear();
-        var beginMonth = beginDate.getMonth() + 1;
-        var beginDay = beginDate.getDate();
-        var beginTimestamp = beginDate.getTime();
+      var beginDateRaw = vm.begin.dateRaw,
+        beginTimeRaw = vm.begin.timeRaw,
+        endDateRaw = vm.end.dateRaw,
+        endTimeRaw = vm.end.timeRaw;
 
-        vm.begin.date = beginMonth + "/" + beginDay + "/" + beginYear;
-
+      if(vm.newTask && (!beginDateRaw || !beginTimeRaw || !endDateRaw || !endTimeRaw)) {
+        vm.inbox.unshift({name: vm.newTask, createdOn: now, completed: false});
+        localStorage.setItem("inbox", JSON.stringify(vm.inbox));
+        $location.path("/todo");
+        return;
       }
 
+      if(vm.newTask && beginDateRaw && beginTimeRaw && endDateRaw && endTimeRaw) {
+        var beginDate = utils.parseDate(new Date(beginDateRaw)),
+          beginTime = utils.parseDate(new Date(beginTimeRaw)),
+          endDate = new Date(endDateRaw),
+          endTime = new Date(endTimeRaw);
+
+        vm.begin.date = vm.addSlash(beginDate);
+        vm.begin.time = vm.addSlash(beginTime);
+        vm.end.date = utils.parseDate(endDate);
+        vm.end.time = utils.parseTime(endTime);
+
+        if(!vm.withDate[beginDate]) {
+          vm.withDate[beginDate] = [];
+        }
+        vm.withDate[beginDate].unshift({
+          name: vm.newTask,
+          createdOn: now,
+          completed: false,
+          beginDate: vm.begin.date,
+          beginTime: vm.begin.time,
+          endDate: vm.end.date,
+          endTime: vm.end.time});
+
+        localStorage.setItem("withDate", JSON.stringify(vm.withDate));
+        $location.path("/todo");
+        return;
+      }
+    };
+
+    vm.addSlash = function(date) {
+      var year = date.substring(0,4),
+        month = date.substring(4,6),
+        day = date.substring(6);
+      return month + "/" + day + "/" + year;
     };
   }
 })();

@@ -2,7 +2,9 @@ var gulp = require("gulp"),
     pug = require("gulp-pug"),
     stylus = require("gulp-stylus"),
     concat = require("gulp-concat"),
-    uglify = require("gulp-uglify");
+    uglify = require("gulp-uglify"),
+    jshint = require("gulp-jshint"),
+    rename = require("gulp-rename");
 
 var config = {
   stylus: {
@@ -36,7 +38,11 @@ gulp.task("pug", function() {
 
 gulp.task("js", function() {
   return gulp.src(config.js.src)
-    .pipe(concat("todoCalendar.min.js"))
+    .pipe(concat("todoCalendar.js"))
+    .pipe(gulp.dest(config.js.dest))
+    .pipe(jshint())
+    .pipe(jshint.reporter("default"))
+    .pipe(rename("todoCalendar.min.js"))
     .pipe(uglify())
     .pipe(gulp.dest(config.js.dest));
 });
