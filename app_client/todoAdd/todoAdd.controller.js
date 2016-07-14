@@ -54,7 +54,7 @@
 
       if(vm.newTask && beginDateRaw && beginTimeRaw && endDateRaw && endTimeRaw) {
         var beginDate = utils.parseDate(new Date(beginDateRaw)),
-          beginTime = utils.parseDate(new Date(beginTimeRaw)),
+          beginTime = utils.parseTime(new Date(beginTimeRaw)),
           endDate = utils.parseDate(new Date(endDateRaw)),
           endTime = utils.parseTime(new Date(endTimeRaw));
 

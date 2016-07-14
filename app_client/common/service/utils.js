@@ -58,6 +58,9 @@
           checkCompleted = function(value) {
             return value.completed === completed;
           };
+      if(completed === undefined) {
+        checkCompleted = function(value){return true;};
+      }
       if(obj.length + 1) {
         tasks = obj.filter(checkCompleted);
       } else {

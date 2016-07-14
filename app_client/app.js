@@ -20,6 +20,11 @@
         controller: "todoAddCtrl",
         controllerAs: "vm"
       })
+      .when("/calendar", {
+        templateUrl: "calendar/calendar.view.html",
+        controller: "calendarCtrl",
+        controllerAs: "vm"
+      })
       .otherwise({redirectTo: "/"});
     $locationProvider.html5Mode(true);
   }
