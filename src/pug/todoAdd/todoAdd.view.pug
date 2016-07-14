@@ -20,13 +20,14 @@ form(ng-submit="vm.onSubmit()")
         .tab-content
           div(class="{{vm.begin.contentStatus}}")
             .form-group(style="padding-top:17px;")
-              input.form-control(type="date", ng-model="vm.begin.dateRaw")
+              input.form-control(type="date", ng-model="vm.begin.dateRaw", ng-change="vm.change()")
             .form-group
-              input.form-control#beginTime(type="time", ng-model="vm.begin.timeRaw")
+              input.form-control#beginTime(type="time", ng-model="vm.begin.timeRaw", ng-change="vm.change()")
           div(class="{{vm.end.contentStatus}}")
             .form-group(style="padding-top:17px;")
-              input.form-control#endDate(type="date", ng-model="vm.end.dateRaw")
+              input.form-control#endDate(type="date", ng-model="vm.end.dateRaw", ng-change="vm.change()")
             .form-group
-              input.form-control#endTime(type="time", ng-model="vm.end.timeRaw")
+              input.form-control#endTime(type="time", ng-model="vm.end.timeRaw", ng-change="vm.change()")
     .panel-footer
       button.btn.btn-primary(type="submit") Save
+footer-generic

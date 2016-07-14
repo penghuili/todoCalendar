@@ -35,6 +35,22 @@
       vm.end.liStatus = "";
       vm.end.contentStatus = "tab-pane";
     };
+
+    vm.change = function() {
+      if(vm.begin.dateRaw) {
+        vm.begin.date = utils.addSlash(utils.parseDate(vm.begin.dateRaw));
+      }
+      if(vm.begin.timeRaw) {
+        vm.begin.time = utils.parseTime(vm.begin.timeRaw);
+      }
+      if(vm.end.dateRaw) {
+        vm.end.date = utils.addSlash(utils.parseDate(vm.end.dateRaw));
+      }
+      if(vm.end.timeRaw) {
+        vm.end.time = utils.parseTime(vm.end.timeRaw);
+      }
+    };
+
     vm.onSubmit = function() {
       if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
         vm.saveToInbox();
@@ -61,7 +77,7 @@
       }
       withDate[beginDate].unshift({
         name: vm.newTask,
-        createdOn: now,
+        createdOn: new Date().getTime(),
         completed: false,
         beginDate: beginDate,
         beginTime: beginTime,
