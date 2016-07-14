@@ -30,26 +30,26 @@
       var checked;
       if(box === "inbox") {
         checked = vm.getChecked(vm.inboxs, true);
-        vm.saveStatusInInbox(checked, true);
+        vm.saveStatusInInbox(checked);
       } else if(box === "today") {
         checked = vm.getChecked(vm.todays, true);
-        vm.saveStatusInWithDate(checked, true);
+        vm.saveStatusInWithDate(checked);
       } else if(box === "upcoming") {
         checked = vm.getChecked(vm.upcomings, true);
-        vm.saveStatusInWithDate(checked, true);
+        vm.saveStatusInWithDate(checked);
       } else if(box === "all") {
         checked = vm.getChecked(vm.alls, true);
         if(checked.beginDate) {
-          vm.saveStatusInWithDate(checked, true);
+          vm.saveStatusInWithDate(checked);
         } else {
-          vm.saveStatusInInbox(checked, true);
+          vm.saveStatusInInbox(checked);
         }
       } else if (box === "completed") {
         checked = vm.getChecked(vm.completeds, false);
         if(checked.beginDate) {
-          vm.saveStatusInWithDate(checked, false);
+          vm.saveStatusInWithDate(checked);
         } else {
-          vm.saveStatusInInbox(checked, false);
+          vm.saveStatusInInbox(checked);
         }
       }
       vm.init();
@@ -61,23 +61,23 @@
       })[0];
     };
 
-    vm.saveStatusInInbox = function(checked, changeTo) {
+    vm.saveStatusInInbox = function(checked) {
       var inboxs = JSON.parse(localStorage.getItem("inbox")) || [];
       var checkedInInbox = inboxs.filter(function(value){
         return value.createdOn === checked.createdOn;
       })[0];
-      checkedInInbox.completed = changeTo;
+      checkedInInbox.completed = !checkedInInbox.completed;
       checkedInInbox.checkedOn = new Date().getTime();
       localStorage.setItem("inbox", JSON.stringify(inboxs));
     };
-    vm.saveStatusInWithDate = function(checked, changeTo) {
+    vm.saveStatusInWithDate = function(checked) {
       var withDate = JSON.parse(localStorage.getItem("withDate")) || {};
       var tmp = checked.beginDate.split("/");
       var beginDate = tmp[2] + tmp[0] + tmp[1];
       var checkeInWithDate = withDate[beginDate].filter(function(value) {
         return value.createdOn === checked.createdOn;
       })[0];
-      checkeInWithDate.completed = changeTo;
+      checkeInWithDate.completed = !checkeInWithDate.completed;
       checkeInWithDate.checkedOn = new Date().getTime();
       localStorage.setItem("withDate", JSON.stringify(withDate));
     };

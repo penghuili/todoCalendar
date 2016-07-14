@@ -42,15 +42,28 @@
 
   calendarCtrl.$inject = ["utils"];
   function calendarCtrl(utils) {
-    var vm = this,
-        withDate = JSON.parse(localStorage.getItem("withDate"));
+    var vm = this;
+
     vm.date = new Date();
     vm.init = function() {
+      var withDate = JSON.parse(localStorage.getItem("withDate"));
       var oneDayTasks = utils.getTasks(withDate, [utils.parseDate(vm.date)]);
       oneDayTasks.forEach(vm.addTask);
+      $(".taskItem input").on("change", function(event) {
+        var id = $(event.currentTarget).parent().attr("id"),
+            beginDate = id.substring(0, 8),
+            createdOn = Number(id.substring(8)),
+            withDate = JSON.parse(localStorage.getItem("withDate")),
+            task = withDate[beginDate].filter(function(value) {
+              return value.createdOn === createdOn;
+            })[0];
+        task.completed = !task.completed;
+        task.checkedOn = new Date().getTime();
+        localStorage.setItem("withDate", JSON.stringify(withDate));
+      });
     };
 
-    vm.change = function() {
+    vm.changeDate = function() {
       $(".taskItem").remove();
       vm.init();
     };
@@ -58,11 +71,10 @@
     vm.addTask = function(task) {
       var beginTimeArr = task.beginTime.split(" ");
       var endTimeArr = task.endTime.split(" ");
-      var top = vm.getTop(beginTimeArr);
+      var top = vm.getTop(beginTimeArr);console.log(top);
       var height = vm.getHeight(beginTimeArr, endTimeArr);
       var colorArr = vm.getRandomColor();
       var div = $("<div class=taskItem></div>").css({
-        "background": "rgba(127,255,212,0.5)",
         "width": "93%",
         "height": height + "px",
         "line-height": height + "px",
@@ -71,9 +83,14 @@
         "top": top + "px",
         "left": "70px",
         "z-index": "1"
-      });
+      }).attr("id", task.beginDate + task.createdOn);
       var input = $("<input type=checkbox checked>");
-      if(!task.completed) {input.removeAttr("checked");}
+      if(!task.completed) {
+        div.css("background", "rgba(127,255,212,0.5)");
+        input.removeAttr("checked");
+      } else {
+        div.css("background", "rgba(169,169,169,0.5)");
+      }
       div.html([input, "&nbsp;", task.name]);
       var taskBox = $("#taskBox");
       taskBox.prepend(div);
@@ -158,26 +175,26 @@
       var checked;
       if(box === "inbox") {
         checked = vm.getChecked(vm.inboxs, true);
-        vm.saveStatusInInbox(checked, true);
+        vm.saveStatusInInbox(checked);
       } else if(box === "today") {
         checked = vm.getChecked(vm.todays, true);
-        vm.saveStatusInWithDate(checked, true);
+        vm.saveStatusInWithDate(checked);
       } else if(box === "upcoming") {
         checked = vm.getChecked(vm.upcomings, true);
-        vm.saveStatusInWithDate(checked, true);
+        vm.saveStatusInWithDate(checked);
       } else if(box === "all") {
         checked = vm.getChecked(vm.alls, true);
         if(checked.beginDate) {
-          vm.saveStatusInWithDate(checked, true);
+          vm.saveStatusInWithDate(checked);
         } else {
-          vm.saveStatusInInbox(checked, true);
+          vm.saveStatusInInbox(checked);
         }
       } else if (box === "completed") {
         checked = vm.getChecked(vm.completeds, false);
         if(checked.beginDate) {
-          vm.saveStatusInWithDate(checked, false);
+          vm.saveStatusInWithDate(checked);
         } else {
-          vm.saveStatusInInbox(checked, false);
+          vm.saveStatusInInbox(checked);
         }
       }
       vm.init();
@@ -189,23 +206,23 @@
       })[0];
     };
 
-    vm.saveStatusInInbox = function(checked, changeTo) {
+    vm.saveStatusInInbox = function(checked) {
       var inboxs = JSON.parse(localStorage.getItem("inbox")) || [];
       var checkedInInbox = inboxs.filter(function(value){
         return value.createdOn === checked.createdOn;
       })[0];
-      checkedInInbox.completed = changeTo;
+      checkedInInbox.completed = !checkedInInbox.completed;
       checkedInInbox.checkedOn = new Date().getTime();
       localStorage.setItem("inbox", JSON.stringify(inboxs));
     };
-    vm.saveStatusInWithDate = function(checked, changeTo) {
+    vm.saveStatusInWithDate = function(checked) {
       var withDate = JSON.parse(localStorage.getItem("withDate")) || {};
       var tmp = checked.beginDate.split("/");
       var beginDate = tmp[2] + tmp[0] + tmp[1];
       var checkeInWithDate = withDate[beginDate].filter(function(value) {
         return value.createdOn === checked.createdOn;
       })[0];
-      checkeInWithDate.completed = changeTo;
+      checkeInWithDate.completed = !checkeInWithDate.completed;
       checkeInWithDate.checkedOn = new Date().getTime();
       localStorage.setItem("withDate", JSON.stringify(withDate));
     };
