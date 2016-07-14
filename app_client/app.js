@@ -15,7 +15,12 @@
         controller: "todoCtrl",
         controllerAs: "vm"
       })
-      .when("/todo/add", {
+      .when("/todo/:id", {
+        templateUrl: "todoDetail/todoDetail.view.html",
+        controller: "todoCtrl",
+        controllerAs: "vm"
+      })
+      .when("/add", {
         templateUrl: "todoAdd/todoAdd.view.html",
         controller: "todoAddCtrl",
         controllerAs: "vm"
