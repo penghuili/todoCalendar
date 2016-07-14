@@ -1,4 +1,4 @@
-.panel-group#todoList
+.panel-group#todoList(ng-init="vm.init()")
   .panel.panel-primary#inboxHead
     .panel-heading
       h3.panel-title
@@ -13,8 +13,8 @@
             <span class="glyphicon glyphicon-pencil"></span>
             &nbsp;Add new
         li.list-group-item(ng-repeat="inbox in vm.inboxs")
-          input(type="checkbox", ng-click="vm.inboxChange()", ng-model="inbox.completed")
-          a(href="todo/{{inbox.createdOn}}", id="{{inbox.createdOn}}").
+          input(type="checkbox", ng-change="vm.change('inbox')", ng-model="inbox.completed")
+          a(href="todo/{{inbox.createdOn}}").
             {{inbox.name}}
 
   .panel.panel-primary#todayHead
@@ -26,7 +26,10 @@
           &nbsp; <span class="badge">{{vm.todays.length}}</span>
     .panel-collapse.collapse#today
       ul.list-group
-        li.list-group-item(ng-repeat="today in vm.todays") {{today.name}}
+        li.list-group-item(ng-repeat="today in vm.todays")
+          input(type="checkbox", ng-change="vm.change('today')", ng-model="today.completed")
+          a(href="todo/{{today.createdOn}}").
+            {{today.name}}
 
   .panel.panel-primary#upcomingHead
     .panel-heading
@@ -37,7 +40,10 @@
           &nbsp; <span class="badge">{{vm.upcomings.length}}</span>
     .panel-collapse.collapse#upcoming
       ul.list-group
-        li.list-group-item(ng-repeat="upcoming in vm.upcomings") {{upcoming.name}}
+        li.list-group-item(ng-repeat="upcoming in vm.upcomings")
+          input(type="checkbox", ng-change="vm.change('upcoming')", ng-model="upcoming.completed")
+          a(href="todo/{{upcoming.createdOn}}").
+            {{upcoming.name}}
 
   .panel.panel-primary#completedHead
     .panel-heading
@@ -49,7 +55,7 @@
     .panel-collapse.collapse#completed
       ul.list-group
         li.list-group-item(ng-repeat="completed in vm.completeds")
-          input(type="checkbox", ng-click="vm.completedChange()", ng-model="completed.completed")
+          input(type="checkbox", ng-change="vm.change('completed')", ng-model="completed.completed")
           a(href="todo/{{completed.createdOn}}", id="{{completed.createdOn}}").
             {{completed.name}}
 
@@ -62,4 +68,7 @@
           &nbsp; <span class="badge">{{vm.alls.length}}</span>
     .panel-collapse.collapse#all
       ul.list-group
-        li.list-group-item(ng-repeat="all in vm.alls") {{all.name}}
+        li.list-group-item(ng-repeat="all in vm.alls")
+          input(type="checkbox", ng-change="vm.change('all')", ng-model="all.completed")
+          a(href="todo/{{all.createdOn}}").
+            {{all.name}}

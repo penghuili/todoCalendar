@@ -133,43 +133,81 @@
 
   todoCtrl.$inject = ["utils"];
   function todoCtrl (utils) {
-    var vm = this,
-        today = new Date(),
-        inboxs = JSON.parse(localStorage.getItem("inbox")) || [],
-        withDate = JSON.parse(localStorage.getItem("withDate")) || {},
-        todayArr = [utils.parseDate(today)],
-        upcomingArr = utils.getUpcomingArr(today, 3),
-        allArr = Object.keys(withDate).sort().reverse();
+    var vm = this;
 
-    vm.inboxs = utils.getTasks(inboxs, [], false);
-    vm.todays = utils.getTasks(withDate, todayArr, false);
-    vm.upcomings = utils.getTasks(withDate, upcomingArr, false);
-    vm.completeds = utils.getTasks(withDate, allArr, true)
-      .concat(utils.getTasks(inboxs, [], true))
-      .sort(function(a, b) {return b.checkedOn - a.checkedOn;});
-    vm.alls = utils.getTasks(withDate, allArr, false)
-      .concat(utils.getTasks(inboxs, [], false))
-      .sort(function(a, b) {return b.createdOn - a.createdOn;});
+    vm.init = function() {
+      var today = new Date(),
+          inboxs = JSON.parse(localStorage.getItem("inbox")) || [],
+          withDate = JSON.parse(localStorage.getItem("withDate")) || {},
+          todayArr = [utils.parseDate(today)],
+          upcomingArr = utils.getUpcomingArr(today, 3),
+          allWithDateArr = Object.keys(withDate).sort().reverse();
 
-    vm.inboxChange = function() {
-      var checked = vm.inboxs.filter(function(value) {
-        return value.completed;
+      vm.inboxs = utils.getTasks(inboxs, [], false);
+      vm.todays = utils.getTasks(withDate, todayArr, false);
+      vm.upcomings = utils.getTasks(withDate, upcomingArr, false);
+      vm.completeds = utils.getTasks(withDate, allWithDateArr, true)
+        .concat(utils.getTasks(inboxs, [], true))
+        .sort(function(a, b) {return b.checkedOn - a.checkedOn;});
+      vm.alls = utils.getTasks(withDate, allWithDateArr, false)
+        .concat(utils.getTasks(inboxs, [], false))
+        .sort(function(a, b) {return b.createdOn - a.createdOn;});
+    };
+
+    vm.change = function(box) {
+      var checked;
+      if(box === "inbox") {
+        checked = vm.getChecked(vm.inboxs, true);
+        vm.saveStatusInInbox(checked, true);
+      } else if(box === "today") {
+        checked = vm.getChecked(vm.todays, true);
+        vm.saveStatusInWithDate(checked, true);
+      } else if(box === "upcoming") {
+        checked = vm.getChecked(vm.upcomings, true);
+        vm.saveStatusInWithDate(checked, true);
+      } else if(box === "all") {
+        checked = vm.getChecked(vm.alls, true);
+        if(checked.beginDate) {
+          vm.saveStatusInWithDate(checked, true);
+        } else {
+          vm.saveStatusInInbox(checked, true);
+        }
+      } else if (box === "completed") {
+        checked = vm.getChecked(vm.completeds, false);
+        if(checked.beginDate) {
+          vm.saveStatusInWithDate(checked, false);
+        } else {
+          vm.saveStatusInInbox(checked, false);
+        }
+      }
+      vm.init();
+    };
+
+    vm.getChecked = function (arr, completed) {
+      return arr.filter(function(value) {
+        return value.completed === completed;
       })[0];
-      var checkedId = checked.createdOn.toString();
-      
-      var index = inboxs.indexOf(checked);
-      inboxs[index].completed = true;
-      inboxs[index].checkedOn = new Date().getTime();
+    };
+
+    vm.saveStatusInInbox = function(checked, changeTo) {
+      var inboxs = JSON.parse(localStorage.getItem("inbox")) || [];
+      var checkedInInbox = inboxs.filter(function(value){
+        return value.createdOn === checked.createdOn;
+      })[0];
+      checkedInInbox.completed = changeTo;
+      checkedInInbox.checkedOn = new Date().getTime();
       localStorage.setItem("inbox", JSON.stringify(inboxs));
-
-      var removed = $("#" + checkedId).parent().remove();
-      var inboxBadge = $("#inboxHead .badge");
-      inboxBadge.html(Number(inboxBadge.html()) - 1);
-
-      var lii = $("#completed .list-group li:first-of-type");
-      removed.insertBefore(lii);
-      var completedBadge = $("#completedHead .badge");
-      completedBadge.html(Number(completedBadge.html()) + 1);
+    };
+    vm.saveStatusInWithDate = function(checked, changeTo) {
+      var withDate = JSON.parse(localStorage.getItem("withDate")) || {};
+      var tmp = checked.beginDate.split("/");
+      var beginDate = tmp[2] + tmp[0] + tmp[1];
+      var checkeInWithDate = withDate[beginDate].filter(function(value) {
+        return value.createdOn === checked.createdOn;
+      })[0];
+      checkeInWithDate.completed = changeTo;
+      checkeInWithDate.checkedOn = new Date().getTime();
+      localStorage.setItem("withDate", JSON.stringify(withDate));
     };
   }
 })();
@@ -192,7 +230,7 @@
       contentStatus: "tab-pane active"
     };
     vm.end = {
-      status: "",
+      liStatus: "",
       date: "Ends on:",
       dateRaw: "",
       time: "Ends at:",
@@ -212,49 +250,39 @@
       vm.end.contentStatus = "tab-pane";
     };
     vm.onSubmit = function() {
-      vm.inbox = JSON.parse(localStorage.getItem("inbox")) || [];
-      vm.withDate = JSON.parse(localStorage.getItem("withDate")) || {};
-      var now = new Date().getTime();
-
-      var beginDateRaw = vm.begin.dateRaw,
-        beginTimeRaw = vm.begin.timeRaw,
-        endDateRaw = vm.end.dateRaw,
-        endTimeRaw = vm.end.timeRaw;
-
-      if(vm.newTask && (!beginDateRaw || !beginTimeRaw || !endDateRaw || !endTimeRaw)) {
-        vm.inbox.unshift({name: vm.newTask, createdOn: now, completed: false});
-        localStorage.setItem("inbox", JSON.stringify(vm.inbox));
-        $location.path("/todo");
-        return;
+      if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
+        vm.saveToInbox();
+      } else {
+        vm.saveToWithDate();
       }
+    };
 
-      if(vm.newTask && beginDateRaw && beginTimeRaw && endDateRaw && endTimeRaw) {
-        var beginDate = utils.parseDate(new Date(beginDateRaw)),
-          beginTime = utils.parseTime(new Date(beginTimeRaw)),
-          endDate = utils.parseDate(new Date(endDateRaw)),
-          endTime = utils.parseTime(new Date(endTimeRaw));
+    vm.saveToInbox = function() {
+      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
+      inbox.unshift({name: vm.newTask, createdOn: new Date().getTime(), completed: false});
+      localStorage.setItem("inbox", JSON.stringify(inbox));
+      $location.path("/todo");
+    };
 
-        vm.begin.date = utils.addSlash(beginDate);
-        vm.begin.time = beginTime;
-        vm.end.date = utils.addSlash(endDate);
-        vm.end.time = endTime;
-
-        if(!vm.withDate[beginDate]) {
-          vm.withDate[beginDate] = [];
-        }
-        vm.withDate[beginDate].unshift({
-          name: vm.newTask,
-          createdOn: now,
-          completed: false,
-          beginDate: vm.begin.date,
-          beginTime: vm.begin.time,
-          endDate: vm.end.date,
-          endTime: vm.end.time});
-
-        localStorage.setItem("withDate", JSON.stringify(vm.withDate));
-        $location.path("/todo");
-        return;
+    vm.saveToWithDate = function() {
+      var withDate = JSON.parse(localStorage.getItem("withDate")) || {},
+          beginDate = utils.parseDate(new Date(vm.begin.dateRaw)),
+          beginTime = utils.parseTime(new Date(vm.begin.timeRaw)),
+          endDate = utils.parseDate(new Date(vm.end.dateRaw)),
+          endTime = utils.parseTime(new Date(vm.end.timeRaw));
+      if(!withDate[beginDate]) {
+        withDate[beginDate] = [];
       }
+      withDate[beginDate].unshift({
+        name: vm.newTask,
+        createdOn: now,
+        completed: false,
+        beginDate: beginDate,
+        beginTime: beginTime,
+        endDate: endDate,
+        endTime: endTime});
+      localStorage.setItem("withDate", JSON.stringify(withDate));
+      $location.path("/todo");
     };
   }
 })();
