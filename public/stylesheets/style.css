@@ -1,3 +1,15 @@
 .container {
   padding-top: 60px;
 }
+.calendarBox {
+  height: 500px;
+  border-top: 1px #ddd solid;
+  border-radius: 4px;
+  overflow: auto;
+}
+.taskBox {
+  position: relative;
+}
+#taskBox ul {
+  margin-bottom: 0;
+}

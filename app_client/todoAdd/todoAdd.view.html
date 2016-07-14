@@ -20,18 +20,18 @@
         <div class="tab-content">
           <div class="{{vm.begin.contentStatus}}">
             <div class="form-group" style="padding-top:17px">
-              <input class="form-control" type="date" ng-model="vm.begin.dateRaw"/>
+              <input class="form-control" type="date" ng-model="vm.begin.dateRaw" ng-change="vm.change()"/>
             </div>
             <div class="form-group">
-              <input class="form-control" id="beginTime" type="time" ng-model="vm.begin.timeRaw"/>
+              <input class="form-control" id="beginTime" type="time" ng-model="vm.begin.timeRaw" ng-change="vm.change()"/>
             </div>
           </div>
           <div class="{{vm.end.contentStatus}}">
             <div class="form-group" style="padding-top:17px">
-              <input class="form-control" id="endDate" type="date" ng-model="vm.end.dateRaw"/>
+              <input class="form-control" id="endDate" type="date" ng-model="vm.end.dateRaw" ng-change="vm.change()"/>
             </div>
             <div class="form-group">
-              <input class="form-control" id="endTime" type="time" ng-model="vm.end.timeRaw"/>
+              <input class="form-control" id="endTime" type="time" ng-model="vm.end.timeRaw" ng-change="vm.change()"/>
             </div>
           </div>
         </div>
@@ -42,3 +42,4 @@
     </div>
   </div>
 </form>
+<footer-generic></footer-generic>
