@@ -17,7 +17,7 @@
       })
       .when("/todo/:id", {
         templateUrl: "todoDetail/todoDetail.view.html",
-        controller: "todoCtrl",
+        controller: "todoDetailCtrl",
         controllerAs: "vm"
       })
       .when("/add", {
@@ -252,17 +252,17 @@
     vm.newTask = "";
     vm.begin = {
       liStatus: "active",
-      date: "Begins on:",
+      date: "Begins on",
       dateRaw: "",
-      time: "Begins at:",
+      time: "Begins at",
       timeRaw: "",
       contentStatus: "tab-pane active"
     };
     vm.end = {
       liStatus: "",
-      date: "Ends on:",
+      date: "Ends on",
       dateRaw: "",
-      time: "Ends at:",
+      time: "Ends at",
       timeRaw: "",
       contentStatus: "tab-pane"
     };
@@ -296,38 +296,12 @@
 
     vm.onSubmit = function() {
       if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
-        vm.saveToInbox();
+        utils.saveToInbox(vm.newTask);
+        $location.path("/todo");
       } else {
-        vm.saveToWithDate();
+        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw);
+        $location.path("/todo");
       }
-    };
-
-    vm.saveToInbox = function() {
-      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
-      inbox.unshift({name: vm.newTask, createdOn: new Date().getTime(), completed: false});
-      localStorage.setItem("inbox", JSON.stringify(inbox));
-      $location.path("/todo");
-    };
-
-    vm.saveToWithDate = function() {
-      var withDate = JSON.parse(localStorage.getItem("withDate")) || {},
-          beginDate = utils.parseDate(new Date(vm.begin.dateRaw)),
-          beginTime = utils.parseTime(new Date(vm.begin.timeRaw)),
-          endDate = utils.parseDate(new Date(vm.end.dateRaw)),
-          endTime = utils.parseTime(new Date(vm.end.timeRaw));
-      if(!withDate[beginDate]) {
-        withDate[beginDate] = [];
-      }
-      withDate[beginDate].unshift({
-        name: vm.newTask,
-        createdOn: new Date().getTime(),
-        completed: false,
-        beginDate: beginDate,
-        beginTime: beginTime,
-        endDate: endDate,
-        endTime: endTime});
-      localStorage.setItem("withDate", JSON.stringify(withDate));
-      $location.path("/todo");
     };
   }
 })();
@@ -337,47 +311,33 @@
     .module("todoCalendar")
     .controller("todoDetailCtrl", todoDetailCtrl);
 
-  todoDetailCtrl.$inject = ["$routeParams", "utils"];
-  function todoDetailCtrl($routeParams, utils) {
+  todoDetailCtrl.$inject = ["$routeParams", "utils", "$location"];
+  function todoDetailCtrl($routeParams, utils, $location) {
     var vm = this;
-    vm.id = $routeParams.id;
-
-
-    var inboxs = JSON.parse(localStorage.getItem("inbox")) || [],
-        tmp = vm.findTask(inboxs),
-        task = tmp ? tmp : vm.findTaskInObj(JSON.parse(localStorage.getItem("withDate")) || {});
-    if(task){
-      vm.newTask = task.name;
-      if(task.beginDate){
-        var beginAndEnd = vm.getBeginAndEndDate(task);
-        vm.begin = {
-          date: utils.parseDate(task.beginDate),
-          time: task.beginTime,
-          dateRaw: beginAndEnd[0],
-          timeRaw: beginAndEnd[0]
-        };
-        vm.end = {
-          date: utils.parseDate(task.endDate),
-          time: task.endTime,
-          dateRaw: beginAndEnd[1],
-          timeRaw: beginAndEnd[1]
-        };
-      }
-    }
-
-    vm.findTaskInArr = function(arr) {
-      return arr.filter(function(value) {
-        return value.createdOn === Number(vm.id);
-      })[0];
+    vm.id = Number($routeParams.id);
+    vm.begin = {
+      liStatus: "active",
+      contentStatus: "tab-pane active",
+      date: "Begins on",
+      time: "Begins at"
     };
-
-    vm.findTaskInObj = function(obj) {
-      var task;
-      for(var i in obj) {
-        task = vm.findTaskInArr(obj[i]);
-        if(task){break;}
-      }
-      return task;
+    vm.end = {
+      liStatus: "",
+      contentStatus: "tab-pane",
+      date: "Begins on",
+      time: "Begins at"
+    };
+    vm.clickEnd = function() {
+      vm.end.liStatus = "active";
+      vm.end.contentStatus = "tab-pane active";
+      vm.begin.liStatus = "";
+      vm.begin.contentStatus = "tab-pane";
+    };
+    vm.clickBegin = function() {
+      vm.begin.liStatus = "active";
+      vm.begin.contentStatus = "tab-pane active";
+      vm.end.liStatus = "";
+      vm.end.contentStatus = "tab-pane";
     };
 
     vm.getBeginAndEndDate = function(task) {
@@ -391,7 +351,7 @@
     };
     vm.numToDate = function(date, time) {
       var year = date.substring(0,4),
-          month = date.substring(4,6),
+          month = Number(date.substring(4,6)) - 1,
           day = date.substring(6),
           hour = time.substring(0,2),
           minute = time.substring(3,5),
@@ -400,6 +360,40 @@
         hour = Number(hour) + 12;
       }
       return new Date(year, month, day, hour, minute);
+    };
+
+
+    var task = utils.getTaskById(vm.id);
+    if(task){
+      vm.newTask = task.name;
+      if(task.beginDate){
+        var beginAndEnd = vm.getBeginAndEndDate(task);
+        vm.begin.date = utils.addSlash(task.beginDate);
+        vm.begin.time = task.beginTime;
+        vm.begin.dateRaw = beginAndEnd[0];
+        vm.begin.timeRaw = beginAndEnd[0];
+        vm.end.date = utils.addSlash(task.endDate);
+        vm.end.time = task.endTime;
+        vm.end.dateRaw = beginAndEnd[1];
+        vm.end.timeRaw = beginAndEnd[1];
+        vm.completed = task.completed;
+      }
+    }
+
+    vm.onSubmit = function() {
+      utils.deleteTaskById(vm.id);
+      if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
+        utils.saveToInbox(vm.newTask, vm.completed);
+        $location.path("/todo");
+      } else {
+        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
+        $location.path("/todo");
+      }
+    };
+
+    vm.delete = function() {
+      utils.deleteTaskById(vm.id);
+      $location.path("/todo");
     };
   }
 })();
@@ -411,6 +405,7 @@
     .service("utils", utils);
 
   function utils() {
+    //helper functions begin
     var addZero = function(num) {
       if(num < 10) {
         return "0" + num.toString();
@@ -431,6 +426,23 @@
         day = date.substring(6);
       return month + "/" + day + "/" + year;
     };
+
+    var findTaskInArr = function(arr, id) {
+      return arr.filter(function(value) {
+        return value.createdOn === id;
+      })[0];
+    };
+
+    var findTaskInObj = function(obj, id) {
+      var task;
+      for(var i in obj) {
+        task = findTaskInArr(obj[i], id);
+        if(task){break;}
+      }
+      return task;
+    };
+    //helper function end
+
 
     var parseDate = function(date) {
       var year = date.getFullYear().toString(),
@@ -478,12 +490,84 @@
       return tasks;
     };
 
+    var getTaskById = function(id) {
+      var task;
+      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
+      task = findTaskInArr(inbox, id);
+      if(!task) {
+        var withDate = JSON.parse(localStorage.getItem("withDate"));
+        task = findTaskInObj(withDate, id);
+      }
+      return task;
+    };
+
+    var saveToInbox = function(newTask, completed) {
+      completed = completed || false;
+      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
+      inbox.unshift({name: newTask, createdOn: new Date().getTime(), completed: completed});
+      localStorage.setItem("inbox", JSON.stringify(inbox));
+    };
+
+    var saveToWithDate = function(newTask, beginDateRaw, beginTimeRaw, endDateRaw, endTimeRaw, completed) {
+      completed = completed || false;
+      var withDate = JSON.parse(localStorage.getItem("withDate")) || {},
+          beginDate = parseDate(new Date(beginDateRaw)),
+          beginTime = parseTime(new Date(beginTimeRaw)),
+          endDate = parseDate(new Date(endDateRaw)),
+          endTime = parseTime(new Date(endTimeRaw));
+      if(!withDate[beginDate]) {
+        withDate[beginDate] = [];
+      }
+      withDate[beginDate].unshift({
+        name: newTask,
+        createdOn: new Date().getTime(),
+        completed: completed,
+        beginDate: beginDate,
+        beginTime: beginTime,
+        endDate: endDate,
+        endTime: endTime});
+      localStorage.setItem("withDate", JSON.stringify(withDate));
+    };
+
+    var deleteTaskById = function(id) {
+      var index = -1,
+          task = getTaskById(id);
+      if(task.beginDate) {
+        var withDate = JSON.parse(localStorage.getItem("withDate"));
+        var arr = withDate[task.beginDate];
+        arr.forEach(function(value, ind) {
+          if(value.createdOn === id) {
+            index = ind;
+          }
+        });
+        if(index > -1){
+          arr.splice(index, 1);
+        }
+        localStorage.setItem("withDate", JSON.stringify(withDate));
+      } else {
+        var inbox = JSON.parse(localStorage.getItem("inbox"));
+        inbox.forEach(function(value, ind) {
+          if(value.createdOn === id) {
+            index = ind;
+          }
+        });
+        if(index > -1){
+          inbox.splice(index, 1);
+        }
+        localStorage.setItem("inbox", JSON.stringify(inbox));
+      }
+    };
+
     return {
       parseDate: parseDate,
       parseTime: parseTime,
       getUpcomingArr: getUpcomingArr,
       getTasks: getTasks,
-      addSlash: addSlash
+      addSlash: addSlash,
+      saveToInbox: saveToInbox,
+      saveToWithDate: saveToWithDate,
+      getTaskById: getTaskById,
+      deleteTaskById: deleteTaskById
     };
   }
 

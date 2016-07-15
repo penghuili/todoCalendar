@@ -9,17 +9,17 @@
     vm.newTask = "";
     vm.begin = {
       liStatus: "active",
-      date: "Begins on:",
+      date: "Begins on",
       dateRaw: "",
-      time: "Begins at:",
+      time: "Begins at",
       timeRaw: "",
       contentStatus: "tab-pane active"
     };
     vm.end = {
       liStatus: "",
-      date: "Ends on:",
+      date: "Ends on",
       dateRaw: "",
-      time: "Ends at:",
+      time: "Ends at",
       timeRaw: "",
       contentStatus: "tab-pane"
     };
@@ -53,38 +53,12 @@
 
     vm.onSubmit = function() {
       if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
-        vm.saveToInbox();
+        utils.saveToInbox(vm.newTask);
+        $location.path("/todo");
       } else {
-        vm.saveToWithDate();
+        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw);
+        $location.path("/todo");
       }
-    };
-
-    vm.saveToInbox = function() {
-      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
-      inbox.unshift({name: vm.newTask, createdOn: new Date().getTime(), completed: false});
-      localStorage.setItem("inbox", JSON.stringify(inbox));
-      $location.path("/todo");
-    };
-
-    vm.saveToWithDate = function() {
-      var withDate = JSON.parse(localStorage.getItem("withDate")) || {},
-          beginDate = utils.parseDate(new Date(vm.begin.dateRaw)),
-          beginTime = utils.parseTime(new Date(vm.begin.timeRaw)),
-          endDate = utils.parseDate(new Date(vm.end.dateRaw)),
-          endTime = utils.parseTime(new Date(vm.end.timeRaw));
-      if(!withDate[beginDate]) {
-        withDate[beginDate] = [];
-      }
-      withDate[beginDate].unshift({
-        name: vm.newTask,
-        createdOn: new Date().getTime(),
-        completed: false,
-        beginDate: beginDate,
-        beginTime: beginTime,
-        endDate: endDate,
-        endTime: endTime});
-      localStorage.setItem("withDate", JSON.stringify(withDate));
-      $location.path("/todo");
     };
   }
 })();

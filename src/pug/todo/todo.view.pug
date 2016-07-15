@@ -45,6 +45,20 @@
           a(href="todo/{{upcoming.createdOn}}").
             {{upcoming.name}}
 
+  .panel.panel-primary#allHead
+    .panel-heading
+      h3.panel-title
+        a(data-toggle='collapse', data-parent='#todoList', href='#all').
+          <span class='glyphicon glyphicon-tasks'></span>
+          &nbsp;All
+          &nbsp; <span class="badge">{{vm.alls.length}}</span>
+    .panel-collapse.collapse#all
+      ul.list-group
+        li.list-group-item(ng-repeat="all in vm.alls")
+          input(type="checkbox", ng-change="vm.change('all')", ng-model="all.completed")
+          a(href="todo/{{all.createdOn}}").
+            {{all.name}}
+
   .panel.panel-primary#completedHead
     .panel-heading
       h3.panel-title
@@ -59,17 +73,4 @@
           a(href="todo/{{completed.createdOn}}", id="{{completed.createdOn}}").
             {{completed.name}}
 
-  .panel.panel-primary#allHead
-    .panel-heading
-      h3.panel-title
-        a(data-toggle='collapse', data-parent='#todoList', href='#all').
-          <span class='glyphicon glyphicon-tasks'></span>
-          &nbsp;All
-          &nbsp; <span class="badge">{{vm.alls.length}}</span>
-    .panel-collapse.collapse#all
-      ul.list-group
-        li.list-group-item(ng-repeat="all in vm.alls")
-          input(type="checkbox", ng-change="vm.change('all')", ng-model="all.completed")
-          a(href="todo/{{all.createdOn}}").
-            {{all.name}}
 footer-generic

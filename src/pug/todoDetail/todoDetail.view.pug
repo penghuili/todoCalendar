@@ -3,7 +3,11 @@ form(ng-submit="vm.onSubmit()")
     .panel-heading
       .form-group(style="padding-top:12px;")
         input.form-control(type="text", placeholder="new task", ng-model="vm.newTask")
-    .panel-body
+    .panel-body#detailPanelBody
+      .checkbox
+        label.
+          <input type="checkbox" ng-model="vm.completed">
+          Completed
       .form-group
         ul.nav.nav-tabs
           li(class="{{vm.begin.liStatus}}", data-toggle="tab")
@@ -29,5 +33,6 @@ form(ng-submit="vm.onSubmit()")
             .form-group
               input.form-control#endTime(type="time", ng-model="vm.end.timeRaw", ng-change="vm.change()")
     .panel-footer
+      button.btn.btn-danger(type="button", ng-click="vm.delete()") Delete
       button.btn.btn-primary(type="submit") Save
 footer-generic

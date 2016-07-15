@@ -5,6 +5,7 @@
     .service("utils", utils);
 
   function utils() {
+    //helper functions begin
     var addZero = function(num) {
       if(num < 10) {
         return "0" + num.toString();
@@ -25,6 +26,23 @@
         day = date.substring(6);
       return month + "/" + day + "/" + year;
     };
+
+    var findTaskInArr = function(arr, id) {
+      return arr.filter(function(value) {
+        return value.createdOn === id;
+      })[0];
+    };
+
+    var findTaskInObj = function(obj, id) {
+      var task;
+      for(var i in obj) {
+        task = findTaskInArr(obj[i], id);
+        if(task){break;}
+      }
+      return task;
+    };
+    //helper function end
+
 
     var parseDate = function(date) {
       var year = date.getFullYear().toString(),
@@ -72,12 +90,84 @@
       return tasks;
     };
 
+    var getTaskById = function(id) {
+      var task;
+      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
+      task = findTaskInArr(inbox, id);
+      if(!task) {
+        var withDate = JSON.parse(localStorage.getItem("withDate"));
+        task = findTaskInObj(withDate, id);
+      }
+      return task;
+    };
+
+    var saveToInbox = function(newTask, completed) {
+      completed = completed || false;
+      var inbox = JSON.parse(localStorage.getItem("inbox")) || [];
+      inbox.unshift({name: newTask, createdOn: new Date().getTime(), completed: completed});
+      localStorage.setItem("inbox", JSON.stringify(inbox));
+    };
+
+    var saveToWithDate = function(newTask, beginDateRaw, beginTimeRaw, endDateRaw, endTimeRaw, completed) {
+      completed = completed || false;
+      var withDate = JSON.parse(localStorage.getItem("withDate")) || {},
+          beginDate = parseDate(new Date(beginDateRaw)),
+          beginTime = parseTime(new Date(beginTimeRaw)),
+          endDate = parseDate(new Date(endDateRaw)),
+          endTime = parseTime(new Date(endTimeRaw));
+      if(!withDate[beginDate]) {
+        withDate[beginDate] = [];
+      }
+      withDate[beginDate].unshift({
+        name: newTask,
+        createdOn: new Date().getTime(),
+        completed: completed,
+        beginDate: beginDate,
+        beginTime: beginTime,
+        endDate: endDate,
+        endTime: endTime});
+      localStorage.setItem("withDate", JSON.stringify(withDate));
+    };
+
+    var deleteTaskById = function(id) {
+      var index = -1,
+          task = getTaskById(id);
+      if(task.beginDate) {
+        var withDate = JSON.parse(localStorage.getItem("withDate"));
+        var arr = withDate[task.beginDate];
+        arr.forEach(function(value, ind) {
+          if(value.createdOn === id) {
+            index = ind;
+          }
+        });
+        if(index > -1){
+          arr.splice(index, 1);
+        }
+        localStorage.setItem("withDate", JSON.stringify(withDate));
+      } else {
+        var inbox = JSON.parse(localStorage.getItem("inbox"));
+        inbox.forEach(function(value, ind) {
+          if(value.createdOn === id) {
+            index = ind;
+          }
+        });
+        if(index > -1){
+          inbox.splice(index, 1);
+        }
+        localStorage.setItem("inbox", JSON.stringify(inbox));
+      }
+    };
+
     return {
       parseDate: parseDate,
       parseTime: parseTime,
       getUpcomingArr: getUpcomingArr,
       getTasks: getTasks,
-      addSlash: addSlash
+      addSlash: addSlash,
+      saveToInbox: saveToInbox,
+      saveToWithDate: saveToWithDate,
+      getTaskById: getTaskById,
+      deleteTaskById: deleteTaskById
     };
   }
 

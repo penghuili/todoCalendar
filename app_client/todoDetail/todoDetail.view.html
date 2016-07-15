@@ -6,7 +6,13 @@
         <input class="form-control" type="text" placeholder="new task" ng-model="vm.newTask"/>
       </div>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" id="detailPanelBody">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="vm.completed">
+          Completed
+        </label>
+      </div>
       <div class="form-group">
         <ul class="nav nav-tabs">
           <li class="{{vm.begin.liStatus}}" data-toggle="tab"><a href="#" ng-click="vm.clickBegin()">
@@ -38,6 +44,7 @@
       </div>
     </div>
     <div class="panel-footer">
+      <button class="btn btn-danger" type="button" ng-click="vm.delete()">Delete</button>
       <button class="btn btn-primary" type="submit">Save</button>
     </div>
   </div>
