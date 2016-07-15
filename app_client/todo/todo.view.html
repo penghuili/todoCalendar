@@ -54,6 +54,23 @@
       </ul>
     </div>
   </div>
+  <div class="panel panel-primary" id="allHead">
+    <div class="panel-heading">
+      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#all">
+          <span class='glyphicon glyphicon-tasks'></span>
+          &nbsp;All
+          &nbsp; <span class="badge">{{vm.alls.length}}</span></a></h3>
+    </div>
+    <div class="panel-collapse collapse" id="all">
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="all in vm.alls">
+          <input type="checkbox" ng-change="vm.change('all')" ng-model="all.completed"/><a href="todo/{{all.createdOn}}">
+            {{all.name}}
+            </a>
+        </li>
+      </ul>
+    </div>
+  </div>
   <div class="panel panel-primary" id="completedHead">
     <div class="panel-heading">
       <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#completed">
@@ -67,21 +84,6 @@
           <input type="checkbox" ng-change="vm.change('completed')" ng-model="completed.completed"/><a href="todo/{{completed.createdOn}}" id="{{completed.createdOn}}">
             {{completed.name}}
             </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="panel panel-primary" id="allHead">
-    <div class="panel-heading">
-      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#all">
-          <span class='glyphicon glyphicon-tasks'></span>
-          &nbsp;All
-          &nbsp; <span class="badge">{{vm.alls.length}}</span></a></h3>
-    </div>
-    <div class="panel-collapse collapse" id="all">
-      <ul class="list-group">
-        <li class="list-group-item" ng-repeat="all in vm.alls">
-          <input type="checkbox" ng-change="vm.change('all')" ng-model="all.completed"/><a href="todo/{{all.createdOn}}">{{all.name}}</a>
         </li>
       </ul>
     </div>
