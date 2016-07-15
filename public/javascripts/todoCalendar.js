@@ -51,6 +51,7 @@
 
     vm.date = new Date();
     vm.init = function() {
+      $(".taskItem").remove();
       var withDate = JSON.parse(localStorage.getItem("withDate"));
       var oneDayTasks = utils.getTasks(withDate, [utils.parseDate(vm.date)]);
       oneDayTasks.forEach(vm.addTask);
@@ -65,6 +66,7 @@
         task.completed = !task.completed;
         task.checkedOn = new Date().getTime();
         localStorage.setItem("withDate", JSON.stringify(withDate));
+        vm.init();
       });
     };
 
@@ -76,7 +78,7 @@
     vm.addTask = function(task) {
       var beginTimeArr = task.beginTime.split(" ");
       var endTimeArr = task.endTime.split(" ");
-      var top = vm.getTop(beginTimeArr);console.log(top);
+      var top = vm.getTop(beginTimeArr);
       var height = vm.getHeight(beginTimeArr, endTimeArr);
       var colorArr = vm.getRandomColor();
       var div = $("<div class=taskItem></div>").css({
@@ -84,17 +86,22 @@
         "height": height + "px",
         "line-height": height + "px",
         "border": "1px solid rgb(" + colorArr[0] + "," + colorArr[1] + "," + colorArr[2] + ")",
+        "border-radius": "4px",
         "position": "absolute",
         "top": top + "px",
         "left": "70px",
         "z-index": "1"
       }).attr("id", task.beginDate + task.createdOn);
       var input = $("<input type=checkbox checked>");
-      if(!task.completed) {
+      var due = Number(utils.parseDate(new Date())) > Number(task.beginDate);
+      if(!task.completed && !due) {
         div.css("background", "rgba(127,255,212,0.5)");
         input.removeAttr("checked");
+      } else if(task.completed){
+        div.css("background", "rgba(0,255,0,0.5)");
       } else {
-        div.css("background", "rgba(169,169,169,0.5)");
+        div.css("background", "rgba(255,69,0,0.5)");
+        input.removeAttr("checked");
       }
       div.html([input, "&nbsp;", task.name]);
       var taskBox = $("#taskBox");
