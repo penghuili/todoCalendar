@@ -2,30 +2,20 @@
 <html ng-app="todoCalendar">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="complete task on calendar directly">
+    <meta name="keywords" content="todo calendar mobile free">
+    <title>todoCalendar</title>
     <base href="/">
     <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/dist/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="stylesheets/style.css">
   </head>
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#the-menu"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">TodoCalendar</a>
-        </div>
-        <div class="collapse navbar-collapse" id="the-menu">
-          <ul class="nav navbar-nav">
-            <li><a href="/#/todo">Todo</a></li>
-            <li><a href="/#/calendar#seven">Calendar</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <navigation></navigation>
     <div class="container" ng-view></div>
     <script src="jquery/dist/jquery.min.js"></script>
-    <script src="angular/angular.min.js"> </script>
+    <script src="angular/angular.min.js"></script>
     <script src="angular-route/angular-route.min.js"></script>
     <script src="bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="javascripts/todoCalendar.min.js"></script>

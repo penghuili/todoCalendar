@@ -1,11 +1,22 @@
+body {
+  background: #f5efe6;
+}
 .container {
-  padding-top: 60px;
+  margin-top: 60px;
 }
 .calendarBox {
   height: 500px;
-  border-top: 1px #ddd solid;
   border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.15);
   overflow: auto;
+  margin-bottom: 20px;
+}
+.calendarBox li {
+  border: none;
+  border-top: 1px solid #ddd;
+}
+.calendarBox .list-group .list-group-item:first-of-type {
+  border: none;
 }
 .taskBox {
   position: relative;
@@ -15,4 +26,34 @@
 }
 #detailPanelBody {
   padding-top: 0;
+}
+#completedHead {
+  display: none;
+}
+.todoBox {
+  border-color: transparent;
+}
+.panel-collapse.collapse {
+  border: 1px solid #ff9800;
+  border-radius: 0 0 4px 4px;
+}
+form .panel.panel-primary {
+  border: 1px solid #ff9800;
+}
+form .panel.panel-primary .panel-heading {
+  border: none;
+}
+#todoList {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.15);
+  padding: 15px;
+  margin-top: 10px;
+  height: 500px;
+  overflow: auto;
+}
+.panel.panel-primary > .panel-heading {
+  background-color: #ff9800;
+  background-image: none;
+  background-repeat: no-repeat;
 }

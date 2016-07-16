@@ -6,6 +6,7 @@
   todoDetailCtrl.$inject = ["$routeParams", "utils", "$location"];
   function todoDetailCtrl($routeParams, utils, $location) {
     var vm = this;
+    vm.raw = {};
     vm.id = Number($routeParams.id);
     vm.begin = {
       liStatus: "active",
@@ -58,6 +59,11 @@
     var task = utils.getTaskById(vm.id);
     if(task){
       vm.newTask = task.name;
+      vm.completed = task.completed;
+
+      vm.raw.name = task.name;
+      vm.raw.completed = task.completed;
+
       if(task.beginDate){
         var beginAndEnd = vm.getBeginAndEndDate(task);
         vm.begin.date = utils.addSlash(task.beginDate);
@@ -68,19 +74,32 @@
         vm.end.time = task.endTime;
         vm.end.dateRaw = beginAndEnd[1];
         vm.end.timeRaw = beginAndEnd[1];
-        vm.completed = task.completed;
+
+        vm.raw.beginDateRaw = beginAndEnd[0];
+        vm.raw.beginTimeRaw = beginAndEnd[0];
+        vm.raw.endDateRaw = beginAndEnd[1];
+        vm.raw.endTimeRaw = beginAndEnd[1];
       }
     }
 
+    vm.changed = function() {
+      return vm.raw.name !== vm.newTask ||
+             vm.raw.completed !== vm.completed ||
+             vm.raw.beginDateRaw !== vm.begin.dateRaw ||
+             vm.raw.beginTimeRaw !== vm.begin.timeRaw ||
+             vm.raw.endDateRaw !== vm.end.dateRaw ||
+             vm.raw.endTimeRaw !== vm.end.timeRaw;
+    };
     vm.onSubmit = function() {
-      utils.deleteTaskById(vm.id);
-      if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
-        utils.saveToInbox(vm.newTask, vm.completed);
-        $location.path("/todo");
-      } else {
-        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
-        $location.path("/todo");
+      if(vm.changed()) {
+        utils.deleteTaskById(vm.id);
+        if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
+          utils.saveToInbox(vm.newTask, vm.completed);
+        } else {
+          utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
+        }
       }
+      $location.path("/todo");
     };
 
     vm.delete = function() {

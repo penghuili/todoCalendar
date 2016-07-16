@@ -7,6 +7,7 @@
   function todoCtrl (utils) {
     var vm = this;
 
+
     vm.init = function() {
       var today = new Date(),
           inboxs = JSON.parse(localStorage.getItem("inbox")) || [],
@@ -24,6 +25,14 @@
       vm.alls = utils.getTasks(withDate, allWithDateArr, false)
         .concat(utils.getTasks(inboxs, [], false))
         .sort(function(a, b) {return b.createdOn - a.createdOn;});
+
+      var navBtnDisplay = $("#navBtn").css("display");
+      if(navBtnDisplay === "none") {
+        $(".panel-collapse.collapse").addClass("in");
+        $(".panel-heading a").attr("href", "#").hover(function() {
+          $(this).css({"cursor": "default", "text-decoration": "none"});
+        });
+      }
     };
 
     vm.change = function(box) {

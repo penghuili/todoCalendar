@@ -2,33 +2,22 @@ doctype html
 html(ng-app="todoCalendar")
   head
     meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+    meta(name="description", content="complete task on calendar directly")
+    meta(name="keywords", content="todo calendar mobile free")
+    title.
+      todoCalendar
     base(href="/")
     link(rel="stylesheet", href="bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="bootstrap/dist/css/bootstrap-theme.min.css")
     link(rel="stylesheet", href="stylesheets/style.css")
   body
-    nav.navbar.navbar-default.navbar-fixed-top
-      .container-fluid
-        .navbar-header
-          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#the-menu')
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand(href='/') TodoCalendar
-
-        .collapse.navbar-collapse#the-menu
-          ul.nav.navbar-nav
-            li
-              a(href='/#/todo') Todo
-            li
-              a(href='/#/calendar#seven') Calendar
+    navigation
 
     .container(ng-view)
 
     script(src="jquery/dist/jquery.min.js")
-    script(src="angular/angular.min.js") 
+    script(src="angular/angular.min.js")
     script(src="angular-route/angular-route.min.js")
     script(src="bootstrap/dist/js/bootstrap.min.js")
     script(src="javascripts/todoCalendar.min.js")
