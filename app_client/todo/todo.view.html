@@ -1,97 +1,102 @@
-<a class="btn btn-info btn-block" id="addNewA" type="button" href="/#/add">
-  <div class="text-left">
-    <span class="glyphicon glyphicon-pencil"></span>
-    &nbsp;Add new
-    
-    
-  </div></a>
+
 <div class="panel-group" id="todoList" ng-init="vm.init()">
-  <div class="panel panel-primary" id="inboxHead">
-    <div class="panel-heading">
-      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#inbox">
-          <span class='glyphicon glyphicon-inbox'></span>
-          &nbsp;Inbox
-          &nbsp; <span class="badge">{{vm.inboxs.length}}</span></a></h3>
+  <div class="row">
+    <div class="panel panel-primary col-md-3 col-xs-12 todoBox" id="inboxHead">
+      <div class="panel-heading">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#inbox">
+            <span class='glyphicon glyphicon-inbox'></span>
+            &nbsp;Inbox
+            &nbsp; <span class="badge">{{vm.inboxs.length}}</span></a></h3>
+      </div>
+      <div class="panel-collapse collapse" id="inbox">
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/#/add">
+              <span class="glyphicon glyphicon-pencil"></span>
+              &nbsp;Add new</a></li>
+          <li class="list-group-item" ng-repeat="inbox in vm.inboxs">
+            <input type="checkbox" ng-change="vm.change('inbox')" ng-model="inbox.completed"/><a href="todo/{{inbox.createdOn}}">
+              {{inbox.name}}
+              </a>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="panel-collapse collapse" id="inbox">
-      <ul class="list-group">
-        <li class="list-group-item"><a href="/#/add">
-            <span class="glyphicon glyphicon-pencil"></span>
-            &nbsp;Add new</a></li>
-        <li class="list-group-item" ng-repeat="inbox in vm.inboxs">
-          <input type="checkbox" ng-change="vm.change('inbox')" ng-model="inbox.completed"/><a href="todo/{{inbox.createdOn}}">
-            {{inbox.name}}
-            </a>
-        </li>
-      </ul>
+    <div class="panel panel-primary col-md-3 col-xs-12 todoBox" id="todayHead">
+      <div class="panel-heading">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#today">
+            <span class='glyphicon glyphicon-star'></span>
+            &nbsp;Today
+            &nbsp; <span class="badge">{{vm.todays.length}}</span></a></h3>
+      </div>
+      <div class="panel-collapse collapse" id="today">
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/#/add">
+              <span class="glyphicon glyphicon-pencil"></span>
+              &nbsp;Add new</a></li>
+          <li class="list-group-item" ng-repeat="today in vm.todays">
+            <input type="checkbox" ng-change="vm.change('today')" ng-model="today.completed"/><a href="todo/{{today.createdOn}}">
+              {{today.name}}
+              </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="panel panel-primary" id="todayHead">
-    <div class="panel-heading">
-      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#today">
-          <span class='glyphicon glyphicon-star'></span>
-          &nbsp;Today
-          &nbsp; <span class="badge">{{vm.todays.length}}</span></a></h3>
+    <div class="panel panel-primary col-md-3 col-xs-12 todoBox" id="upcomingHead">
+      <div class="panel-heading">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#upcoming">
+            <span class='glyphicon glyphicon-refresh'></span>
+            &nbsp;Upcoming
+            &nbsp; <span class="badge">{{vm.upcomings.length}}</span></a></h3>
+      </div>
+      <div class="panel-collapse collapse" id="upcoming">
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/#/add">
+              <span class="glyphicon glyphicon-pencil"></span>
+              &nbsp;Add new</a></li>
+          <li class="list-group-item" ng-repeat="upcoming in vm.upcomings">
+            <input type="checkbox" ng-change="vm.change('upcoming')" ng-model="upcoming.completed"/><a href="todo/{{upcoming.createdOn}}">
+              {{upcoming.name}}
+              </a>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="panel-collapse collapse" id="today">
-      <ul class="list-group">
-        <li class="list-group-item" ng-repeat="today in vm.todays">
-          <input type="checkbox" ng-change="vm.change('today')" ng-model="today.completed"/><a href="todo/{{today.createdOn}}">
-            {{today.name}}
-            </a>
-        </li>
-      </ul>
+    <div class="panel panel-primary col-md-3 col-xs-12 todoBox" id="allHead">
+      <div class="panel-heading">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#all">
+            <span class='glyphicon glyphicon-tasks'></span>
+            &nbsp;All
+            &nbsp; <span class="badge">{{vm.alls.length}}</span></a></h3>
+      </div>
+      <div class="panel-collapse collapse" id="all">
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/#/add">
+              <span class="glyphicon glyphicon-pencil"></span>
+              &nbsp;Add new</a></li>
+          <li class="list-group-item" ng-repeat="all in vm.alls">
+            <input type="checkbox" ng-change="vm.change('all')" ng-model="all.completed"/><a href="todo/{{all.createdOn}}">
+              {{all.name}}
+              </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="panel panel-primary" id="upcomingHead">
-    <div class="panel-heading">
-      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#upcoming">
-          <span class='glyphicon glyphicon-refresh'></span>
-          &nbsp;Upcoming
-          &nbsp; <span class="badge">{{vm.upcomings.length}}</span></a></h3>
-    </div>
-    <div class="panel-collapse collapse" id="upcoming">
-      <ul class="list-group">
-        <li class="list-group-item" ng-repeat="upcoming in vm.upcomings">
-          <input type="checkbox" ng-change="vm.change('upcoming')" ng-model="upcoming.completed"/><a href="todo/{{upcoming.createdOn}}">
-            {{upcoming.name}}
-            </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="panel panel-primary" id="allHead">
-    <div class="panel-heading">
-      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#all">
-          <span class='glyphicon glyphicon-tasks'></span>
-          &nbsp;All
-          &nbsp; <span class="badge">{{vm.alls.length}}</span></a></h3>
-    </div>
-    <div class="panel-collapse collapse" id="all">
-      <ul class="list-group">
-        <li class="list-group-item" ng-repeat="all in vm.alls">
-          <input type="checkbox" ng-change="vm.change('all')" ng-model="all.completed"/><a href="todo/{{all.createdOn}}">
-            {{all.name}}
-            </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="panel panel-primary" id="completedHead">
-    <div class="panel-heading">
-      <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#completed">
-          <span class='glyphicon glyphicon-thumbs-up'></span>
-          &nbsp;Completed
-          &nbsp; <span class="badge">{{vm.completeds.length}}</span></a></h3>
-    </div>
-    <div class="panel-collapse collapse" id="completed">
-      <ul class="list-group">
-        <li class="list-group-item" ng-repeat="completed in vm.completeds">
-          <input type="checkbox" ng-change="vm.change('completed')" ng-model="completed.completed"/><a href="todo/{{completed.createdOn}}" id="{{completed.createdOn}}">
-            {{completed.name}}
-            </a>
-        </li>
-      </ul>
+    <div class="panel panel-primary" id="completedHead">
+      <div class="panel-heading">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#todoList" href="#completed">
+            <span class='glyphicon glyphicon-thumbs-up'></span>
+            &nbsp;Completed
+            &nbsp; <span class="badge">{{vm.completeds.length}}</span></a></h3>
+      </div>
+      <div class="panel-collapse collapse" id="completed">
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="completed in vm.completeds">
+            <input type="checkbox" ng-change="vm.change('completed')" ng-model="completed.completed"/><a href="todo/{{completed.createdOn}}" id="{{completed.createdOn}}">
+              {{completed.name}}
+              </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
