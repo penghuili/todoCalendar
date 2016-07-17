@@ -27,9 +27,6 @@ body {
 #detailPanelBody {
   padding-top: 0;
 }
-#completedHead {
-  display: none;
-}
 .todoBox {
   border-color: transparent;
 }
