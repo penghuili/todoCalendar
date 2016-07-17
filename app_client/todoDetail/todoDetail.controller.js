@@ -33,29 +33,6 @@
       vm.end.contentStatus = "tab-pane";
     };
 
-    vm.getBeginAndEndDate = function(task) {
-      var beginDate = task.beginDate,
-          beginTime = task.beginTime,
-          endDate = task.endDate,
-          endTime = task.endTime,
-          beginDateAndTime = vm.numToDate(beginDate, beginTime),
-          endDateAndTime = vm.numToDate(endDate, endTime);
-      return [beginDateAndTime, endDateAndTime];
-    };
-    vm.numToDate = function(date, time) {
-      var year = date.substring(0,4),
-          month = Number(date.substring(4,6)) - 1,
-          day = date.substring(6),
-          hour = time.substring(0,2),
-          minute = time.substring(3,5),
-          amOrPm = time.substring(6);
-      if(amOrPm === "PM") {
-        hour = Number(hour) + 12;
-      }
-      return new Date(year, month, day, hour, minute);
-    };
-
-
     var task = utils.getTaskById(vm.id);
     if(task){
       vm.newTask = task.name;
@@ -64,21 +41,19 @@
       vm.raw.name = task.name;
       vm.raw.completed = task.completed;
 
-      if(task.beginDate){
-        var beginAndEnd = vm.getBeginAndEndDate(task);
-        vm.begin.date = utils.addSlash(task.beginDate);
-        vm.begin.time = task.beginTime;
-        vm.begin.dateRaw = beginAndEnd[0];
-        vm.begin.timeRaw = beginAndEnd[0];
-        vm.end.date = utils.addSlash(task.endDate);
-        vm.end.time = task.endTime;
-        vm.end.dateRaw = beginAndEnd[1];
-        vm.end.timeRaw = beginAndEnd[1];
+      if(task.begin){
+        vm.begin.dateRaw = new Date(task.begin);
+        vm.begin.timeRaw = new Date(task.begin);
+        vm.begin.date = utils.timestampToDateWithSlash(task.begin);
+        vm.begin.time = utils.timestampToTimeWithAM(task.begin);
 
-        vm.raw.beginDateRaw = beginAndEnd[0];
-        vm.raw.beginTimeRaw = beginAndEnd[0];
-        vm.raw.endDateRaw = beginAndEnd[1];
-        vm.raw.endTimeRaw = beginAndEnd[1];
+        vm.end.dateRaw = new Date(task.end);
+        vm.end.timeRaw = new Date(task.end);
+        vm.end.date = utils.timestampToDateWithSlash(task.end);
+        vm.end.time = utils.timestampToTimeWithAM(task.end);
+
+        vm.raw.beginDateRaw = new Date(task.begin);
+        vm.raw.endDateRaw = new Date(task.end);
       }
     }
 
@@ -86,24 +61,24 @@
       return vm.raw.name !== vm.newTask ||
              vm.raw.completed !== vm.completed ||
              vm.raw.beginDateRaw !== vm.begin.dateRaw ||
-             vm.raw.beginTimeRaw !== vm.begin.timeRaw ||
+             vm.raw.beginDateRaw !== vm.begin.timeRaw ||
              vm.raw.endDateRaw !== vm.end.dateRaw ||
-             vm.raw.endTimeRaw !== vm.end.timeRaw;
+             vm.raw.endDateRaw !== vm.end.timeRaw;
     };
     vm.onSubmit = function() {
       if(vm.changed()) {
         utils.deleteTaskById(vm.id);
-        if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
-          utils.saveToInbox(vm.newTask, vm.completed);
-        } else {
-          utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
-        }
+        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
       }
       $location.path("/todo");
     };
 
     vm.delete = function() {
-      utils.deleteTaskById(vm.id);
+      var beginDate;
+      if(vm.begin.dateRaw) {
+        beginDate = utils.timestampToDateString(vm.begin.dateRaw.getTime());
+      }
+      utils.deleteTaskById(vm.id, beginDate);
       $location.path("/todo");
     };
   }

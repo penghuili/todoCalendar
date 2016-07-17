@@ -10,20 +10,22 @@
     vm.date = new Date();
     vm.init = function() {
       $(".taskItem").remove();
-      var withDate = JSON.parse(localStorage.getItem("withDate"));
-      var oneDayTasks = utils.getTasks(withDate, [utils.parseDate(vm.date)]);
+      var dateString = utils.timestampToDateString(vm.date.getTime());
+      var oneDayTasks = utils.getTasks("someday", dateString);
       oneDayTasks.forEach(vm.addTask);
+
       $(".taskItem input").on("change", function(event) {
         var id = $(event.currentTarget).parent().attr("id"),
-            beginDate = id.substring(0, 8),
-            createdOn = Number(id.substring(8)),
-            withDate = JSON.parse(localStorage.getItem("withDate")),
-            task = withDate[beginDate].filter(function(value) {
+            tmp = id.split("_"),
+            beginDate = utils.timestampToDateString(Number(tmp[0])),
+            createdOn = Number(tmp[1]),
+            database = utils.getDatabase(),
+            task = database[beginDate].filter(function(value) {
               return value.createdOn === createdOn;
             })[0];
         task.completed = !task.completed;
         task.checkedOn = new Date().getTime();
-        localStorage.setItem("withDate", JSON.stringify(withDate));
+        localStorage.setItem("database", JSON.stringify(database));
         vm.init();
       });
     };
@@ -34,10 +36,8 @@
     };
 
     vm.addTask = function(task) {
-      var beginTimeArr = task.beginTime.split(" ");
-      var endTimeArr = task.endTime.split(" ");
-      var top = vm.getTop(beginTimeArr);
-      var height = vm.getHeight(beginTimeArr, endTimeArr);
+      var top = vm.getTop(task.begin);
+      var height = vm.getHeight(task.begin, task.end);
       var colorArr = vm.getRandomColor();
       var div = $("<div class=taskItem></div>").css({
         "width": "93%",
@@ -49,9 +49,9 @@
         "top": top + "px",
         "left": "70px",
         "z-index": "1"
-      }).attr("id", task.beginDate + task.createdOn);
+      }).attr("id", task.begin.toString() + "_" + task.createdOn.toString());
       var input = $("<input type=checkbox checked>");
-      var due = Number(utils.parseDate(new Date())) > Number(task.beginDate);
+      var due = Number(utils.timestampToDateString(new Date().getTime())) > Number(utils.timestampToDateString(task.begin));
       if(!task.completed && !due) {
         div.css("background", "rgba(127,255,212,0.5)");
         input.removeAttr("checked");
@@ -61,31 +61,26 @@
         div.css("background", "rgba(255,69,0,0.5)");
         input.removeAttr("checked");
       }
-      div.html([input, "&nbsp;", task.name]);
+      var a = $("<a></a>").attr("href", "/#/todo/" + task.createdOn).html(task.name);
+      if(task.completed){
+        a = $("<del></del>").html(a);
+      }
+      div.html([input, "&nbsp;", a]);
       var taskBox = $("#taskBox");
       taskBox.prepend(div);
     };
 
-    vm.getTop = function(beginTimeArr) {
-      var hourAndMinute = vm.getHourAndMinute(beginTimeArr);
-      var top = hourAndMinute[0] * 2 * 41 + 2 + 82 * hourAndMinute[1] / 60;
-      return top;
+    vm.getTop = function(timestamp) {
+      var date = new Date(timestamp),
+          hour = date.getHours(),
+          minute = date.getMinutes();
+      return hour * 2 * 41 + 2 + 82 * minute / 60;
     };
 
-    vm.getHeight = function(beginTimeArr, endTimeArr) {
-      var beginTop = vm.getTop(beginTimeArr);
-      var endTop = vm.getTop(endTimeArr);
+    vm.getHeight = function(beginTimestamp, endTimestamp) {
+      var beginTop = vm.getTop(beginTimestamp);
+      var endTop = vm.getTop(endTimestamp);
       return endTop - beginTop - 3;
-    };
-
-    vm.getHourAndMinute = function(timeArr) {
-      var hourAndMinute = timeArr[0].split(":"),
-          hour = Number(hourAndMinute[0]),
-          minute = Number(hourAndMinute[1]);
-      if(timeArr[1] === "PM") {
-        hour += 12;
-      }
-      return [hour, minute];
     };
 
     vm.getRandomColor = function() {

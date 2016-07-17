@@ -38,27 +38,22 @@
 
     vm.change = function() {
       if(vm.begin.dateRaw) {
-        vm.begin.date = utils.addSlash(utils.parseDate(vm.begin.dateRaw));
+        vm.begin.date = utils.timestampToDateWithSlash(vm.begin.dateRaw.getTime());
       }
       if(vm.begin.timeRaw) {
-        vm.begin.time = utils.parseTime(vm.begin.timeRaw);
+        vm.begin.time = utils.timestampToTimeWithAM(vm.begin.timeRaw.getTime());
       }
       if(vm.end.dateRaw) {
-        vm.end.date = utils.addSlash(utils.parseDate(vm.end.dateRaw));
+        vm.end.date = utils.timestampToDateWithSlash(vm.end.dateRaw.getTime());
       }
       if(vm.end.timeRaw) {
-        vm.end.time = utils.parseTime(vm.end.timeRaw);
+        vm.end.time = utils.timestampToTimeWithAM(vm.end.timeRaw.getTime());
       }
     };
 
     vm.onSubmit = function() {
-      if(vm.newTask && (!vm.begin.dateRaw || !vm.begin.timeRaw || !vm.end.dateRaw || !vm.end.timeRaw)) {
-        utils.saveToInbox(vm.newTask);
-        $location.path("/todo");
-      } else {
-        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw);
-        $location.path("/todo");
-      }
+      utils.saveNewTask(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw);
+      $location.path("/todo");
     };
   }
 })();
