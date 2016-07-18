@@ -35,16 +35,39 @@
       vm.init();
     };
 
+    vm.prev = function() {
+      vm.date = new Date(vm.date.setDate(vm.date.getDate() - 1));
+      vm.changeDate();
+      return false;
+    };
+
+    vm.next = function() {
+      vm.date = new Date(vm.date.setDate(vm.date.getDate() + 1));
+      vm.changeDate();
+      return false;
+    };
+
+    vm.today = function() {
+      vm.date = new Date();
+      vm.changeDate();
+      return false;
+    };
+
     vm.addTask = function(task) {
-      var top = vm.getTop(task.begin);
+      var width = $("#taskBox ul").width();
+      if(utils.mobile()) {
+        width = width * 0.85;
+      } else {
+        width = width * 0.93;
+      }
+      var top = vm.getTop(task.begin) + 1;
       var height = vm.getHeight(task.begin, task.end);
       var colorArr = vm.getRandomColor();
       var div = $("<div class=taskItem></div>").css({
-        "width": "93%",
+        "width": width + "px",
         "height": height + "px",
         "line-height": height + "px",
         "border": "1px solid rgb(" + colorArr[0] + "," + colorArr[1] + "," + colorArr[2] + ")",
-        "border-radius": "4px",
         "position": "absolute",
         "top": top + "px",
         "left": "70px",
@@ -74,13 +97,13 @@
       var date = new Date(timestamp),
           hour = date.getHours(),
           minute = date.getMinutes();
-      return hour * 2 * 41 + 2 + 82 * minute / 60;
+      return hour * 60 + 60 * minute / 60;
     };
 
     vm.getHeight = function(beginTimestamp, endTimestamp) {
-      var beginTop = vm.getTop(beginTimestamp);
-      var endTop = vm.getTop(endTimestamp);
-      return endTop - beginTop - 3;
+      var beginTop = vm.getTop(beginTimestamp) + 1;
+      var endTop = vm.getTop(endTimestamp) - 2;
+      return endTop - beginTop;
     };
 
     vm.getRandomColor = function() {

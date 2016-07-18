@@ -15,8 +15,7 @@
       vm.alls = utils.getTasks("all");
 
       if(!vm.checkedDevice){
-        var navBtnDisplay = $("#navBtn").css("display");
-        if(navBtnDisplay === "none") {
+        if(!utils.mobile()) {
           $(".panel-collapse.collapse").addClass("in");
           $(".panel-heading a").attr("href", "#").hover(function() {
             $(this).css({"cursor": "default", "text-decoration": "none"});

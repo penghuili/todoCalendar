@@ -16,14 +16,20 @@
     var amOrPm = function(hour) {
       if(hour > 12) {
         return [addZero(hour - 12), "PM"];
+      } else if (hour === 12) {
+        return [12, "PM"];
       }
       return [addZero(hour), "AM"];
     };
 
     var dateAndTimeToTimestamp = function(date, time) {
       var hour = time.getHours(),
-          minute = time.getMinutes();
-      return date.getTime() + (hour * 60 + minute) * 60000;
+          minute = time.getMinutes(),
+          day = date.getDate(),
+          month = date.getMonth(),
+          year = date.getFullYear(),
+          timestamp = new Date(year, month, day, hour, minute).getTime();
+      return timestamp;
     };
 
     var getDatabase = function() {
@@ -63,9 +69,9 @@
           return arr.sort(function(a, b) {
             return b.createdOn - a.createdOn;
           });
-        } else if(where === "today" || "all"){
+        } else if(where === "today" || where === "all"){
           return arr.sort(function(a, b) {
-            return b.begin - a.begin;
+            return a.begin - b.begin;
           });
         } else if (where === "completed") {
           return arr.sort(function(a, b) {
@@ -89,7 +95,8 @@
           for(var date in obj) {
             tasks = tasks.concat(getTasksFromArr(obj[date], completed));
           }
-          return sortArr(tasks, "completed");
+          tasks = sortArr(tasks,"completed");
+          return tasks;
         } else {
           var keys = Object.keys(obj),
               inboxIndex = keys.indexOf("inbox");
@@ -163,6 +170,7 @@
         var begin = dateAndTimeToTimestamp(new Date(beginDateRaw), new Date(beginTimeRaw)),
             end = dateAndTimeToTimestamp(new Date(endDateRaw), new Date(endTimeRaw)),
             beginDate = timestampToDateString(begin);
+
         database[beginDate] = database[beginDate] || [];
         database[beginDate].unshift({
           name: newTask,
@@ -170,6 +178,9 @@
           completed: completed,
           begin: begin,
           end: end});
+        if(completed) {
+          database[beginDate][0].checkedOn = new Date().getTime();
+        }
       }
       localStorage.setItem("database", JSON.stringify(database));
     };
@@ -221,6 +232,12 @@
       return null;
     };
 
+
+    var mobile = function () {
+      var navBtnDisplay = $("#navBtn").css("display");
+      return navBtnDisplay === "inline-block";
+    };
+
     return {
       timestampToDateString: timestampToDateString,
       timestampToDateWithSlash: timestampToDateWithSlash,
@@ -230,7 +247,8 @@
       getTaskById: getTaskById,
       saveNewTask: saveNewTask,
       updateTask: updateTask,
-      deleteTaskById: deleteTaskById
+      deleteTaskById: deleteTaskById,
+      mobile: mobile
     };
   }
 

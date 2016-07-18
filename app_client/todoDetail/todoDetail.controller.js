@@ -33,7 +33,7 @@
       vm.end.contentStatus = "tab-pane";
     };
 
-    var task = utils.getTaskById(vm.id);
+    var task = utils.getTaskById(vm.id);console.log(task);
     if(task){
       vm.newTask = task.name;
       vm.completed = task.completed;
@@ -57,6 +57,21 @@
       }
     }
 
+    vm.change = function() {
+      if(vm.begin.dateRaw) {
+        vm.begin.date = utils.timestampToDateWithSlash(vm.begin.dateRaw.getTime());
+      }
+      if(vm.begin.timeRaw) {
+        vm.begin.time = utils.timestampToTimeWithAM(vm.begin.timeRaw.getTime());
+      }
+      if(vm.end.dateRaw) {
+        vm.end.date = utils.timestampToDateWithSlash(vm.end.dateRaw.getTime());
+      }
+      if(vm.end.timeRaw) {
+        vm.end.time = utils.timestampToTimeWithAM(vm.end.timeRaw.getTime());
+      }
+    };
+
     vm.changed = function() {
       return vm.raw.name !== vm.newTask ||
              vm.raw.completed !== vm.completed ||
@@ -68,7 +83,7 @@
     vm.onSubmit = function() {
       if(vm.changed()) {
         utils.deleteTaskById(vm.id);
-        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
+        utils.saveNewTask(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
       }
       $location.path("/todo");
     };

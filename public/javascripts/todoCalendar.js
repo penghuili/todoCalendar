@@ -77,16 +77,39 @@
       vm.init();
     };
 
+    vm.prev = function() {
+      vm.date = new Date(vm.date.setDate(vm.date.getDate() - 1));
+      vm.changeDate();
+      return false;
+    };
+
+    vm.next = function() {
+      vm.date = new Date(vm.date.setDate(vm.date.getDate() + 1));
+      vm.changeDate();
+      return false;
+    };
+
+    vm.today = function() {
+      vm.date = new Date();
+      vm.changeDate();
+      return false;
+    };
+
     vm.addTask = function(task) {
-      var top = vm.getTop(task.begin);
+      var width = $("#taskBox ul").width();
+      if(utils.mobile()) {
+        width = width * 0.85;
+      } else {
+        width = width * 0.93;
+      }
+      var top = vm.getTop(task.begin) + 1;
       var height = vm.getHeight(task.begin, task.end);
       var colorArr = vm.getRandomColor();
       var div = $("<div class=taskItem></div>").css({
-        "width": "93%",
+        "width": width + "px",
         "height": height + "px",
         "line-height": height + "px",
         "border": "1px solid rgb(" + colorArr[0] + "," + colorArr[1] + "," + colorArr[2] + ")",
-        "border-radius": "4px",
         "position": "absolute",
         "top": top + "px",
         "left": "70px",
@@ -116,13 +139,13 @@
       var date = new Date(timestamp),
           hour = date.getHours(),
           minute = date.getMinutes();
-      return hour * 2 * 41 + 2 + 82 * minute / 60;
+      return hour * 60 + 60 * minute / 60;
     };
 
     vm.getHeight = function(beginTimestamp, endTimestamp) {
-      var beginTop = vm.getTop(beginTimestamp);
-      var endTop = vm.getTop(endTimestamp);
-      return endTop - beginTop - 3;
+      var beginTop = vm.getTop(beginTimestamp) + 1;
+      var endTop = vm.getTop(endTimestamp) - 2;
+      return endTop - beginTop;
     };
 
     vm.getRandomColor = function() {
@@ -167,8 +190,7 @@
       vm.alls = utils.getTasks("all");
 
       if(!vm.checkedDevice){
-        var navBtnDisplay = $("#navBtn").css("display");
-        if(navBtnDisplay === "none") {
+        if(!utils.mobile()) {
           $(".panel-collapse.collapse").addClass("in");
           $(".panel-heading a").attr("href", "#").hover(function() {
             $(this).css({"cursor": "default", "text-decoration": "none"});
@@ -212,6 +234,107 @@
           return task;
         }
       }
+    };
+  }
+})();
+
+(function() {
+  angular
+    .module("todoCalendar")
+    .controller("todoDetailCtrl", todoDetailCtrl);
+
+  todoDetailCtrl.$inject = ["$routeParams", "utils", "$location"];
+  function todoDetailCtrl($routeParams, utils, $location) {
+    var vm = this;
+    vm.raw = {};
+    vm.id = Number($routeParams.id);
+    vm.begin = {
+      liStatus: "active",
+      contentStatus: "tab-pane active",
+      date: "Begins on",
+      time: "Begins at"
+    };
+    vm.end = {
+      liStatus: "",
+      contentStatus: "tab-pane",
+      date: "Begins on",
+      time: "Begins at"
+    };
+    vm.clickEnd = function() {
+      vm.end.liStatus = "active";
+      vm.end.contentStatus = "tab-pane active";
+      vm.begin.liStatus = "";
+      vm.begin.contentStatus = "tab-pane";
+    };
+    vm.clickBegin = function() {
+      vm.begin.liStatus = "active";
+      vm.begin.contentStatus = "tab-pane active";
+      vm.end.liStatus = "";
+      vm.end.contentStatus = "tab-pane";
+    };
+
+    var task = utils.getTaskById(vm.id);console.log(task);
+    if(task){
+      vm.newTask = task.name;
+      vm.completed = task.completed;
+
+      vm.raw.name = task.name;
+      vm.raw.completed = task.completed;
+
+      if(task.begin){
+        vm.begin.dateRaw = new Date(task.begin);
+        vm.begin.timeRaw = new Date(task.begin);
+        vm.begin.date = utils.timestampToDateWithSlash(task.begin);
+        vm.begin.time = utils.timestampToTimeWithAM(task.begin);
+
+        vm.end.dateRaw = new Date(task.end);
+        vm.end.timeRaw = new Date(task.end);
+        vm.end.date = utils.timestampToDateWithSlash(task.end);
+        vm.end.time = utils.timestampToTimeWithAM(task.end);
+
+        vm.raw.beginDateRaw = new Date(task.begin);
+        vm.raw.endDateRaw = new Date(task.end);
+      }
+    }
+
+    vm.change = function() {
+      if(vm.begin.dateRaw) {
+        vm.begin.date = utils.timestampToDateWithSlash(vm.begin.dateRaw.getTime());
+      }
+      if(vm.begin.timeRaw) {
+        vm.begin.time = utils.timestampToTimeWithAM(vm.begin.timeRaw.getTime());
+      }
+      if(vm.end.dateRaw) {
+        vm.end.date = utils.timestampToDateWithSlash(vm.end.dateRaw.getTime());
+      }
+      if(vm.end.timeRaw) {
+        vm.end.time = utils.timestampToTimeWithAM(vm.end.timeRaw.getTime());
+      }
+    };
+
+    vm.changed = function() {
+      return vm.raw.name !== vm.newTask ||
+             vm.raw.completed !== vm.completed ||
+             vm.raw.beginDateRaw !== vm.begin.dateRaw ||
+             vm.raw.beginDateRaw !== vm.begin.timeRaw ||
+             vm.raw.endDateRaw !== vm.end.dateRaw ||
+             vm.raw.endDateRaw !== vm.end.timeRaw;
+    };
+    vm.onSubmit = function() {
+      if(vm.changed()) {
+        utils.deleteTaskById(vm.id);
+        utils.saveNewTask(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
+      }
+      $location.path("/todo");
+    };
+
+    vm.delete = function() {
+      var beginDate;
+      if(vm.begin.dateRaw) {
+        beginDate = utils.timestampToDateString(vm.begin.dateRaw.getTime());
+      }
+      utils.deleteTaskById(vm.id, beginDate);
+      $location.path("/todo");
     };
   }
 })();
@@ -277,92 +400,6 @@
 })();
 
 (function() {
-  angular
-    .module("todoCalendar")
-    .controller("todoDetailCtrl", todoDetailCtrl);
-
-  todoDetailCtrl.$inject = ["$routeParams", "utils", "$location"];
-  function todoDetailCtrl($routeParams, utils, $location) {
-    var vm = this;
-    vm.raw = {};
-    vm.id = Number($routeParams.id);
-    vm.begin = {
-      liStatus: "active",
-      contentStatus: "tab-pane active",
-      date: "Begins on",
-      time: "Begins at"
-    };
-    vm.end = {
-      liStatus: "",
-      contentStatus: "tab-pane",
-      date: "Begins on",
-      time: "Begins at"
-    };
-    vm.clickEnd = function() {
-      vm.end.liStatus = "active";
-      vm.end.contentStatus = "tab-pane active";
-      vm.begin.liStatus = "";
-      vm.begin.contentStatus = "tab-pane";
-    };
-    vm.clickBegin = function() {
-      vm.begin.liStatus = "active";
-      vm.begin.contentStatus = "tab-pane active";
-      vm.end.liStatus = "";
-      vm.end.contentStatus = "tab-pane";
-    };
-
-    var task = utils.getTaskById(vm.id);
-    if(task){
-      vm.newTask = task.name;
-      vm.completed = task.completed;
-
-      vm.raw.name = task.name;
-      vm.raw.completed = task.completed;
-
-      if(task.begin){
-        vm.begin.dateRaw = new Date(task.begin);
-        vm.begin.timeRaw = new Date(task.begin);
-        vm.begin.date = utils.timestampToDateWithSlash(task.begin);
-        vm.begin.time = utils.timestampToTimeWithAM(task.begin);
-
-        vm.end.dateRaw = new Date(task.end);
-        vm.end.timeRaw = new Date(task.end);
-        vm.end.date = utils.timestampToDateWithSlash(task.end);
-        vm.end.time = utils.timestampToTimeWithAM(task.end);
-
-        vm.raw.beginDateRaw = new Date(task.begin);
-        vm.raw.endDateRaw = new Date(task.end);
-      }
-    }
-
-    vm.changed = function() {
-      return vm.raw.name !== vm.newTask ||
-             vm.raw.completed !== vm.completed ||
-             vm.raw.beginDateRaw !== vm.begin.dateRaw ||
-             vm.raw.beginDateRaw !== vm.begin.timeRaw ||
-             vm.raw.endDateRaw !== vm.end.dateRaw ||
-             vm.raw.endDateRaw !== vm.end.timeRaw;
-    };
-    vm.onSubmit = function() {
-      if(vm.changed()) {
-        utils.deleteTaskById(vm.id);
-        utils.saveToWithDate(vm.newTask, vm.begin.dateRaw, vm.begin.timeRaw, vm.end.dateRaw, vm.end.timeRaw, vm.completed);
-      }
-      $location.path("/todo");
-    };
-
-    vm.delete = function() {
-      var beginDate;
-      if(vm.begin.dateRaw) {
-        beginDate = utils.timestampToDateString(vm.begin.dateRaw.getTime());
-      }
-      utils.deleteTaskById(vm.id, beginDate);
-      $location.path("/todo");
-    };
-  }
-})();
-
-(function() {
 
   angular
     .module("todoCalendar")
@@ -380,14 +417,20 @@
     var amOrPm = function(hour) {
       if(hour > 12) {
         return [addZero(hour - 12), "PM"];
+      } else if (hour === 12) {
+        return [12, "PM"];
       }
       return [addZero(hour), "AM"];
     };
 
     var dateAndTimeToTimestamp = function(date, time) {
       var hour = time.getHours(),
-          minute = time.getMinutes();
-      return date.getTime() + (hour * 60 + minute) * 60000;
+          minute = time.getMinutes(),
+          day = date.getDate(),
+          month = date.getMonth(),
+          year = date.getFullYear(),
+          timestamp = new Date(year, month, day, hour, minute).getTime();
+      return timestamp;
     };
 
     var getDatabase = function() {
@@ -427,9 +470,9 @@
           return arr.sort(function(a, b) {
             return b.createdOn - a.createdOn;
           });
-        } else if(where === "today" || "all"){
+        } else if(where === "today" || where === "all"){
           return arr.sort(function(a, b) {
-            return b.begin - a.begin;
+            return a.begin - b.begin;
           });
         } else if (where === "completed") {
           return arr.sort(function(a, b) {
@@ -453,7 +496,8 @@
           for(var date in obj) {
             tasks = tasks.concat(getTasksFromArr(obj[date], completed));
           }
-          return sortArr(tasks, "completed");
+          tasks = sortArr(tasks,"completed");
+          return tasks;
         } else {
           var keys = Object.keys(obj),
               inboxIndex = keys.indexOf("inbox");
@@ -527,6 +571,7 @@
         var begin = dateAndTimeToTimestamp(new Date(beginDateRaw), new Date(beginTimeRaw)),
             end = dateAndTimeToTimestamp(new Date(endDateRaw), new Date(endTimeRaw)),
             beginDate = timestampToDateString(begin);
+
         database[beginDate] = database[beginDate] || [];
         database[beginDate].unshift({
           name: newTask,
@@ -534,6 +579,9 @@
           completed: completed,
           begin: begin,
           end: end});
+        if(completed) {
+          database[beginDate][0].checkedOn = new Date().getTime();
+        }
       }
       localStorage.setItem("database", JSON.stringify(database));
     };
@@ -585,6 +633,12 @@
       return null;
     };
 
+
+    var mobile = function () {
+      var navBtnDisplay = $("#navBtn").css("display");
+      return navBtnDisplay === "inline-block";
+    };
+
     return {
       timestampToDateString: timestampToDateString,
       timestampToDateWithSlash: timestampToDateWithSlash,
@@ -594,7 +648,8 @@
       getTaskById: getTaskById,
       saveNewTask: saveNewTask,
       updateTask: updateTask,
-      deleteTaskById: deleteTaskById
+      deleteTaskById: deleteTaskById,
+      mobile: mobile
     };
   }
 
