@@ -15,6 +15,7 @@
       vm.alls = utils.getTasks("all");
 
       if(!vm.checkedDevice){
+
         if(!utils.mobile()) {
           $(".panel-collapse.collapse").addClass("in");
           $(".panel-heading a").attr("href", "#").hover(function() {
@@ -24,6 +25,7 @@
           $("#todoList").css("height", "auto");
         }
         vm.checkedDevice = true;
+
       }
     };
 

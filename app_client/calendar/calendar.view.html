@@ -1,7 +1,9 @@
 
-<div class="text-center" id="calendarDatepicker">
-  <div class="form-inline"><a class="btn btn-default-btn-sm" ng-click="vm.today()">Today</a><a href="" ng-click="vm.prev()"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></a>
-    <input class="form-control" id="endTime" type="date" ng-model="vm.date" ng-change="vm.changeDate()"/><a href="" ng-click="vm.next()"><span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span></a>
+<div class="form-inline" id="calendarDatepicker">
+  <div class="row">
+    <div class="text-center"><a class="btn btn-default-btn-sm" ng-click="vm.today()">Today</a><a href="" ng-click="vm.prev()"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></a>
+      <input id="endTime" type="date" ng-model="vm.date" ng-change="vm.changeDate()"/><a href="" ng-click="vm.next()"><span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
   </div>
 </div>
 <div class="calendarBox" ng-init="vm.init()">

@@ -235,7 +235,7 @@
 
     var mobile = function () {
       var navBtnDisplay = $("#navBtn").css("display");
-      return navBtnDisplay === "inline-block";
+      return navBtnDisplay === "block";
     };
 
     return {
