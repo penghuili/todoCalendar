@@ -57,3 +57,6 @@ form .panel.panel-primary .panel-heading {
   background-image: none;
   background-repeat: no-repeat;
 }
+#calendarDatepicker {
+  margin-bottom: 10px;
+}

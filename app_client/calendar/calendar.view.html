@@ -1,6 +1,8 @@
 
-<div class="form-group">
-  <input class="form-control" id="endTime" type="date" ng-model="vm.date" ng-change="vm.changeDate()"/>
+<div class="text-center" id="calendarDatepicker">
+  <div class="form-inline"><a class="btn btn-default-btn-sm" ng-click="vm.today()">Today</a><a href="" ng-click="vm.prev()"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></a>
+    <input class="form-control" id="endTime" type="date" ng-model="vm.date" ng-change="vm.changeDate()"/><a href="" ng-click="vm.next()"><span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span></a>
+  </div>
 </div>
 <div class="calendarBox" ng-init="vm.init()">
   <div class="taskBox" id="taskBox">
@@ -53,7 +55,6 @@
       <li class="list-group-item">22:30</li>
       <li class="list-group-item">23:00</li>
       <li class="list-group-item">23:30</li>
-      <li class="list-group-item">24:00</li>
     </ul>
   </div>
 </div>
