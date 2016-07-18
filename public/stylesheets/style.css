@@ -24,6 +24,9 @@ body {
 #taskBox ul {
   margin-bottom: 0;
 }
+#taskBox ul li.list-group-item {
+  padding-top: 0;
+}
 #detailPanelBody {
   padding-top: 0;
 }
