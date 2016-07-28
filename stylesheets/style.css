@@ -1,0 +1,38 @@
+body {
+  background: #f5efe6;
+}
+.navbar-brand img {
+  display: inline;
+}
+.container {
+  margin-top: 60px;
+}
+.homePageTop {
+  padding-top: 100px;
+}
+.homePageLeft {
+  padding-left: 100px;
+}
+.homePage {
+  background: #ff9800;
+  border-radius: 5px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.15);
+  padding: 20px;
+  margin-top: 10px;
+  height: 500px;
+}
+.homePage h1,
+.homePage h2,
+.homePage h3,
+.homePage h4 {
+  color: #fff;
+}
+.homePage .col-md-6 h2,
+.homePage .col-lg-6 h2 {
+  margin-top: 120px;
+}
+
+footer {
+  margin-bottom: 30px;
+  margin-top: 20px;
+}

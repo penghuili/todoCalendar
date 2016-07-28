@@ -1,43 +1,154 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html ng-app="todoCalendar">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Todocalendar - complete your todo in calendar directly</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="Mark as done in calendar directly">
+    <meta name="keywords" content="todo calendar mobile free">
+    <title>TodoCalendar - Mark as done in calendar directly</title>
+    <base href="/">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheets/style.css">
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>todoCalendar</h1>
-        <p>Complete your todo task in calendar directy</p>
-        <p class="view"><a href="https://github.com/penghuili/todoCalendar">View the Project on GitHub <small>penghuili/todoCalendar</small></a></p>
-        <ul>
-          <li><a href="https://github.com/penghuili/todoCalendar/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/penghuili/todoCalendar/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/penghuili/todoCalendar">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a id="welcome-to-todocalendar" class="anchor" href="#welcome-to-todocalendar" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to todoCalendar</h3>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle" id="navBtn" type="button" data-toggle="collapse" data-target="#the-menu"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">
+            <img src="images/logo_background_white.jpg" width="20px" height="20px"> TodoCalendar
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="the-menu">
+          <ul class="nav navbar-nav">
+            <li><a href="/#/calendar#seven" ng-click="navvm.hidePanelBody()">Calendar</a></li>
+            <li><a href="/#/todo" ng-click="navvm.hidePanelBody()">Todo</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-<p>Complete your todo task in calendar directy!</p>
-      </section>
+    <div class="container">
+      <div class="homePage homePageTop">
+        <div class="text-center"><img src="images/logo_background_orange.png" width="165px" height="165px"/>
+          <h1>TodoCalendar</h1>
+          <h3>Mark as done in calendar directly!</h3>
+        </div>
+      </div>
+      <div class="visible-xs visible-sm">
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h2>There are so many choices</h2>
+            <h4>Why another one?</h4>
+            <h4>Because ...</h4>
+            <div class="text-center"><img src="images/todoAndCalendar.jpg" width="200px" height="200px"/></div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h3>Google calendar is good</h3>
+            <div class="text-center"><img src="images/googleCalendar.PNG" width="220px" height="379px"/></div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h3>But ...  </h3>
+            <h4>Events in google calendar can't be marked as done, and ...</h4>
+            <h4>Reminders can, but reminders don't have a end time, so reminder bar never has a height like events ...</h4>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h3>You can also use calendar5</h3>
+            <div class="text-center"><img src="images/calendar5.PNG" width="220px" height="379px"/></div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h3>But ...</h3>
+            <h4>Events also can't be marked as done, and ...</h4>
+            <h4>All todos stays at the top, you can't see the begin and end time, worse ...</h4>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h3>With TodoCalendar</h3>
+            <div class="text-center"><img src="images/todoCalendar.PNG" width="220px" height="379px"/></div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="col-xs-12 col-sm-12">
+            <h4>There are no events or reminders!</h4>
+            <h3>Only todos! </h3>
+            <h3>All todos have begin and end time!</h3>
+            <h3>Mark todos as done in calendar directly!</h3>
+            <h3>And a lot new features are coming!</h3>
+            <h4> <a href="/todo">Try it now >></a></h4>
+          </div>
+        </div>
+      </div>
+      <div class="visible-md visible-lg">
+        <div class="homePage">
+          <div class="row">
+            <col-md-6 class="col-lg-6 homePageLeft">
+              <h2>There are so many choices</h2>
+              <h4>Why another one?</h4>
+              <h4>Because ...</h4>
+            </col-md-6>
+            <div class="col-md-6 col-lg-6">
+              <div class="text-center"><img src="images/todoAndCalendar.jpg" width="460px" height="460px"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="row">
+            <div class="col-md-6 col-lg-6">
+              <div class="text-center"><img src="images/googleCalendar.PNG" width="267px" height="460px"/></div>
+            </div>
+            <div class="col-md-6 col-lg-6 visible-md visible-lg">
+              <h2>Google calendar is good, but ...</h2>
+              <h4>Events in google calendar can't be marked as done, and ...</h4>
+              <h4>Reminders can, but reminders don't have a end time, so reminder bar never has a height like events ...</h4>
+            </div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="row">
+            <div class="col-md-6 col-lg-6 homePageLeft">
+              <h2>You can also use calendar5, but ...</h2>
+              <h4>Events also can't be marked as done, and ...</h4>
+              <h4>All todos stays at the top, you can't see the begin and end time, worse ...</h4>
+            </div>
+            <div class="col-md-6 col-lg-6">
+              <div class="text-center"><img src="images/calendar5.PNG" width="267px" height="460px"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="homePage">
+          <div class="row">
+            <div class="col-md-6 col-lg-6">
+              <div class="text-center"><img src="images/todoCalendar.PNG" width="267px" height="460px"/></div>
+            </div>
+            <div class="col-md-6 col-lg-6">
+              <h2>With TodoCalendar</h2>
+              <h4>There are no events or reminders</h4>
+              <h3>Only todos! </h3>
+              <h3>All todos have begin and end time!</h3>
+              <h3>Mark todos as done in calendar directly!</h3>
+              <h3>And a lot new features are coming!</h3>
+              <h4> <a href="/todo">Try it now >></a></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="row">
+          <div class="col-md-12"><small>&copy; Penghui Li 2016</small></div>
+        </div>
+      </footer>
     </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/penghuili">penghuili</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>
 </html>
