@@ -1,3 +1,99 @@
-h1 {{vm.title}}
-p Welcome to {{vm.title}}
+.homePage.homePageTop
+  .text-center
+    img(src="images/logo_background_orange.png", width="165px", height="165px")
+    h1 TodoCalendar
+    h3 Mark as done in calendar directly!
+
+.visible-xs.visible-sm
+  .homePage
+    .col-xs-12.col-sm-12
+      h2 There are so many choices
+      h4 Why another one?
+      h4 Because ...
+      .text-center
+        img(src="images/todoAndCalendar.jpg", width="200px", height="200px")
+
+  .homePage
+    .col-xs-12.col-sm-12
+      h3 Google calendar is good
+      .text-center
+        img(src="images/googleCalendar.PNG", width="220px", height="379px") 
+             
+  .homePage
+    .col-xs-12.col-sm-12
+      h3 But ...  
+      h4 Events in google calendar can't be marked as done, and ...
+      h4 Reminders can, but reminders don't have a end time, so reminder bar never has a height like events ...
+  
+  .homePage
+    .col-xs-12.col-sm-12
+      h3 You can also use calendar5
+      .text-center
+        img(src="images/calendar5.PNG", width="220px", height="379px")
+  .homePage
+    .col-xs-12.col-sm-12
+      h3 But ...
+      h4 Events also can't be marked as done, and ...
+      h4 All todos stays at the top, you can't see the begin and end time, worse ...
+
+  .homePage
+    .col-xs-12.col-sm-12
+      h3 With TodoCalendar
+      .text-center
+        img(src="images/todoCalendar.PNG", width="220px", height="379px")
+  .homePage
+    .col-xs-12.col-sm-12
+      h4 There are no events or reminders!
+      h3 Only todos! 
+      h3 All todos have begin and end time!
+      h3 Mark todos as done in calendar directly!
+      h3 And a lot new features are coming!
+      h4 
+        a(href="/todo") Try it now >>
+
+.visible-md.visible-lg
+  .homePage
+    .row
+      col-md-6.col-lg-6.homePageLeft
+        h2 There are so many choices
+        h4 Why another one?
+        h4 Because ...
+      .col-md-6.col-lg-6
+        .text-center
+          img(src="images/todoAndCalendar.jpg", width="460px", height="460px")
+
+  .homePage
+    .row
+      .col-md-6.col-lg-6
+        .text-center
+          img(src="images/googleCalendar.PNG", width="267px", height="460px")
+      .col-md-6.col-lg-6.visible-md.visible-lg
+        h2 Google calendar is good, but ...
+        h4 Events in google calendar can't be marked as done, and ...
+        h4 Reminders can, but reminders don't have a end time, so reminder bar never has a height like events ...
+
+  .homePage
+    .row
+      .col-md-6.col-lg-6.homePageLeft
+        h2 You can also use calendar5, but ...
+        h4 Events also can't be marked as done, and ...
+        h4 All todos stays at the top, you can't see the begin and end time, worse ...
+      .col-md-6.col-lg-6
+        .text-center
+          img(src="images/calendar5.PNG", width="267px", height="460px")
+
+  .homePage
+    .row
+      .col-md-6.col-lg-6
+        .text-center
+          img(src="images/todoCalendar.PNG", width="267px", height="460px")
+      .col-md-6.col-lg-6
+        h2 With TodoCalendar
+        h4 There are no events or reminders
+        h3 Only todos! 
+        h3 All todos have begin and end time!
+        h3 Mark todos as done in calendar directly!
+        h3 And a lot new features are coming!
+        h4 
+          a(href="/todo") Try it now >>
 footer-generic

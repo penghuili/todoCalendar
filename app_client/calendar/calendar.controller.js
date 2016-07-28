@@ -56,7 +56,7 @@
     vm.addTask = function(task) {
       var width = $("#taskBox ul").width();
       if(utils.mobile()) {
-        width = width * 0.85;
+        width = width * 0.73;
       } else {
         width = width * 0.93;
       }

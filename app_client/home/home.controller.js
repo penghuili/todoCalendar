@@ -6,7 +6,6 @@
 
   function homeCtrl() {
     var vm = this;
-    vm.title = "TodoCalendar";
   }
 
 })();

@@ -5,7 +5,7 @@
 
   function footerGeneric() {
     return {
-      templateUrl: "common/directive/footerGeneric/footerGeneric.view.html"
+      templateUrl: "common/components/footerGeneric/footerGeneric.view.html"
     };
   }
 })();

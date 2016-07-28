@@ -5,7 +5,7 @@
 
   function navigation() {
     return {
-      templateUrl: "common/directive/navigation/navigation.view.html",
+      templateUrl: "common/components/navigation/navigation.view.html",
       controller: "navigationCtrl as navvm"
     };
   }

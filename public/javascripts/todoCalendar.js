@@ -98,7 +98,7 @@
     vm.addTask = function(task) {
       var width = $("#taskBox ul").width();
       if(utils.mobile()) {
-        width = width * 0.85;
+        width = width * 0.73;
       } else {
         width = width * 0.93;
       }
@@ -168,7 +168,6 @@
 
   function homeCtrl() {
     var vm = this;
-    vm.title = "TodoCalendar";
   }
 
 })();
@@ -664,7 +663,7 @@
 
   function footerGeneric() {
     return {
-      templateUrl: "common/directive/footerGeneric/footerGeneric.view.html"
+      templateUrl: "common/components/footerGeneric/footerGeneric.view.html"
     };
   }
 })();
@@ -689,7 +688,7 @@
 
   function navigation() {
     return {
-      templateUrl: "common/directive/navigation/navigation.view.html",
+      templateUrl: "common/components/navigation/navigation.view.html",
       controller: "navigationCtrl as navvm"
     };
   }
